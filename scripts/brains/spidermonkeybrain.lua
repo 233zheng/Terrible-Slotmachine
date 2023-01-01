@@ -5,6 +5,8 @@ require "behaviours/panic"
 require "behaviours/chaseandattack"
 require "behaviours/leash"
 
+local BrainCommon = require "brains/braincommon"
+
 local MIN_FOLLOW_DIST = 5
 local TARGET_FOLLOW_DIST = 7
 local MAX_FOLLOW_DIST = 10
@@ -31,7 +33,6 @@ local SpiderMonkeyBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-
 local function GoHome(inst)
     if inst.components.homeseeker and inst.components.homeseeker.home and inst.components.homeseeker.home:IsValid() then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME)
@@ -39,15 +40,15 @@ local function GoHome(inst)
 end
 
 local function GoHomeAction(inst)
-    if inst.components.homeseeker and 
-       inst.components.homeseeker:HasHome() then 
+    if inst.components.homeseeker and
+       inst.components.homeseeker:HasHome() then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.GOHOME, nil, nil, nil, 0.2)
     end
 end
 
 local function DefendHomeAction(inst)
-    if inst.components.homeseeker and 
-       inst.components.homeseeker:HasHome() then 
+    if inst.components.homeseeker and
+       inst.components.homeseeker:HasHome() then
         return BufferedAction(inst, inst.components.homeseeker.home, ACTIONS.WALKTO, nil, nil, nil, 0.2)
     end
 end
@@ -65,10 +66,12 @@ end
 function SpiderMonkeyBrain:OnStart()
     local root = PriorityNode(
     {
+        BrainCommon.PanicTrigger(self.inst),
+
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
 
         ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
-        
+
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST),
     }, .25)
     self.bt = BT(self.inst, root)

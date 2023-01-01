@@ -3,6 +3,8 @@ require "behaviours/runaway"
 require "behaviours/doaction"
 require "behaviours/panic"
 
+local BrainCommon = require "brains/braincommon"
+
 local STOP_RUN_DIST = 10
 local SEE_PLAYER_DIST = 5
 
@@ -38,16 +40,17 @@ local function MountDungAction(inst)
     end
 end
 
-function DungBeetleBrain:OnStart()  
+function DungBeetleBrain:OnStart()
     local root = PriorityNode(
     {
+        BrainCommon.PanicTrigger(self.inst),
         WhileNode( function() return self.inst.components.health.takingfiredamage end, "OnFire", Panic(self.inst)),
         RunAway(self.inst, "scarytoprey", AVOID_PLAYER_DIST, AVOID_PLAYER_STOP),
         RunAway(self.inst, "scarytoprey", SEE_PLAYER_DIST, STOP_RUN_DIST, nil, false),
 
-        DoAction(self.inst, MountDungAction),        
+        DoAction(self.inst, MountDungAction),
         DoAction(self.inst, DigDungAction),
-      
+
         Wander(self.inst, function() return self.inst.components.knownlocations:GetLocation("home") end, MAX_WANDER_DIST)
 
     }, .25)

@@ -19,7 +19,8 @@ local function DoTest(inst)
         local musthave = { "animal","character","monster","stationarymonster","insect","smallcreature","structure","seacreature"}
 
         if component.inventorytrigger then
-            musthave = {"isinventoryitem", "monster", "animal", "character","insect","smallcreature"}
+            -- musthave = {"isinventoryitem", "monster", "animal", "character","insect","smallcreature"}
+            musthave = {"_inventoryitem", "monster", "animal", "character","insect","smallcreature"}
         end
 
         local nothave = {"INTERIOR_LIMBO"}
@@ -58,8 +59,8 @@ end
 
 local CreatureProx = Class(function(self, inst)
     self.inst = inst
-    self.near = 3--原版2
-    self.far = 4--原版3
+    self.near = 2
+    self.far = 3
     self.period = .333
     self.onnear = nil
     self.onfar = nil

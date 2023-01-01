@@ -8,10 +8,10 @@ local ANGLE_VARIANCE = 10
 local assets =
 {
 	Asset("ANIM", "anim/tumbleweed.zip"),
-    Asset("ANIM", "anim/dungball_build.zip"),    
+    Asset("ANIM", "anim/dungball_build.zip"),
 }
 
-local prefabs = 
+local prefabs =
 {
 	"cutgrass",
 	"twigs",
@@ -24,7 +24,7 @@ local SFX_COOLDOWN = 5
 
 local function onpickup(inst, owner)
 	if owner and owner.components.inventory then
-		if inst.owner and inst.owner.components.childspawner then 
+		if inst.owner and inst.owner.components.childspawner then
 			inst:PushEvent("pickedup")
 		end
 
@@ -59,7 +59,7 @@ local function MakeLoot(inst)
     {
         {chance = 1,   item = "cutgrass"},
         {chance = 1,   item = "twigs"},
-        {chance = 10,   item = "rocks"},        
+        {chance = 10,   item = "rocks"},
         {chance = 10,   item = "flint"},
         {chance = 1,   item = "seeds"},
         {chance = 5,   item = "poop"},
@@ -93,7 +93,7 @@ local function MakeLoot(inst)
         end
         if next_loot ~= nil then
             table.insert(inst.loot, next_loot)
-            if next_aggro then 
+            if next_aggro then
                 table.insert(inst.lootaggro, true)
             else
                 table.insert(inst.lootaggro, false)
@@ -147,7 +147,7 @@ local function onburnt(inst)
     inst:DoTaskInTime(1.2, function(inst)
         local ash = SpawnPrefab("ash")
         ash.Transform:SetPosition(inst.Transform:GetWorldPosition())
-        
+
         if inst.components.stackable then
             ash.components.stackable.stacksize = inst.components.stackable.stacksize
         end
@@ -165,24 +165,25 @@ local function OnEntityWake(inst)
 
 end
 
-local function fn(Sim)
+local function fn()
 	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-    local sound = inst.entity:AddSoundEmitter()
-    local shadow = inst.entity:AddDynamicShadow()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddDynamicShadow()
+    inst.entity:AddPhysics()
     inst.entity:AddNetwork()
-	
+
     inst.Transform:SetFourFaced()
-    shadow:SetSize( 1.7, .8 )
+    inst.DynamicShadow:SetSize( 1.7, .8 )
 
-    anim:SetBank("tumbleweed")
-    anim:SetBuild("dungball_build")
-    anim:PlayAnimation("idle")
-    
-    inst:AddTag("dungball") 
+    inst.AnimState:SetBank("tumbleweed")
+    inst.AnimState:SetBuild("dungball_build")
+    inst.AnimState:PlayAnimation("idle")
 
-	local phys = inst.entity:AddPhysics()
+    inst:AddTag("dungball")
+
+	local phys =inst.Physics
     phys:SetMass(1)
     phys:SetFriction(1)
     phys:SetDamping(5)
@@ -200,9 +201,8 @@ local function fn(Sim)
 	if not TheWorld.ismastersim then
 		return inst
 	end
-	
-    inst:AddComponent("inspectable")
 
+    inst:AddComponent("inspectable")
     inst:AddComponent("lootdropper")
 
     inst:AddComponent("pickable")
@@ -218,9 +218,9 @@ local function fn(Sim)
     inst.components.propagator.propagaterange = 5
 
    	inst.OnEntityWake = OnEntityWake
-   	inst.OnEntitySleep = OnEntitySleep  
+   	inst.OnEntitySleep = OnEntitySleep
 
     return inst
 end
 
-return Prefab( "badlands/objects/dungball", fn, assets, prefabs) 
+return Prefab("dungball", fn, assets, prefabs)

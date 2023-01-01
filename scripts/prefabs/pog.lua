@@ -1,45 +1,26 @@
-require("brains/pogbrain")
+require "brains/pogbrain"
 require "stategraphs/SGcatcoon"
 
-local assets = 
+local assets =
 {
 	Asset("ANIM", "anim/pog_basic.zip"),
 	Asset("ANIM", "anim/pog_actions.zip"),
 	Asset("ANIM", "anim/pog_feral_build.zip"),
-	--Asset("SOUND", "sound/catcoon.fsb"),
 }
 
-local prefabs = 
-{
-
+local prefabs = {
+    "smallmeat"
 }
 
-local POG_ATTACK_RANGE = 3
-local POG_MELEE_RANGE = 2.5
-local POG_TARGET_DIST = 25
-local POG_WALK_SPEED = 2
-local POG_RUN_SPEED = 4.5
-local POG_DAMAGE = 25
-local POG_HEALTH = 150
-local POG_ATTACK_PERIOD = 2
+local brain = require("brains/pogbrain")
 
-local MIN_POGNAP_INTERVAL = 30
-local MAX_POGNAP_INTERVAL = 120
-local MIN_POGNAP_LENGTH = 20
-local MAX_POGNAP_LENGTH = 40	
-
-local POG_LOYALTY_MAXTIME = 480
-local POG_LOYALTY_PER_ITEM = 480*.1
-local POG_EAT_DELAY = 0.5
-local POG_SEE_FOOD = 30
-
-SetSharedLootTable( 'pog',
+SetSharedLootTable('pog',
 {
     {'smallmeat',             1.00},
 })
 
-local MAX_TARGET_SHARES = 5
-local SHARE_TARGET_DIST = 30
+local MAX_TARGET_SHARES = TUNING.POG_MELEE_RANGE*TUNING.POG_ATTACK_PERIOD
+local SHARE_TARGET_DIST = TUNING.POG_SEE_FOOD
 
 local function OnAttacked(inst, data)
     local attacker = data.attacker
@@ -48,11 +29,10 @@ local function OnAttacked(inst, data)
 	if inst.components.combat and not inst.components.combat.target then
 	--	inst.sg:GoToState("hiss")
 	end
-    if inst.components.combat then 
-    	inst.components.combat:SetTarget(data.attacker) 
+    if inst.components.combat then
+    	inst.components.combat:SetTarget(data.attacker)
     	inst.components.combat:ShareTarget(attacker, SHARE_TARGET_DIST, function(dude) return dude:HasTag("pog") end, MAX_TARGET_SHARES)
     end
-    
 end
 
 local function KeepTargetFn(inst, target)
@@ -73,16 +53,16 @@ local function KeepTargetFn(inst, target)
 end
 
 local function RetargetFn(inst)
-    return FindEntity(inst, POG_TARGET_DIST,
+    return FindEntity(inst, TUNING.POG_TARGET_DIST,
         function(guy)
-            	return 	((guy:HasTag("monster") or guy:HasTag("smallcreature")) and 
+            	return 	((guy:HasTag("monster") or guy:HasTag("smallcreature")) and
             			not guy:HasTag("pog") and
-	            		guy.components.health and 
-	            		not guy.components.health:IsDead() and 
-	            		inst.components.combat:CanTarget(guy) and 
+	            		guy.components.health and
+	            		not guy.components.health:IsDead() and
+	            		inst.components.combat:CanTarget(guy) and
 	            		not (inst.components.follower and inst.components.follower.leader ~= nil and guy:HasTag("abigail"))) and
             			not (inst.components.follower and guy.components.follower and inst.components.follower.leader ~= nil and inst.components.follower.leader == guy.components.follower.leader) and
-            			not (inst.components.follower and guy.components.follower and inst.components.follower.leader ~= nil and guy.components.follower.leader and guy.components.follower.leader.components.inventoryitem and guy.components.follower.leader.components.inventoryitem.owner and inst.components.follower.leader == guy.components.follower.leader.components.inventoryitem.owner)	         	        
+            			not (inst.components.follower and guy.components.follower and inst.components.follower.leader ~= nil and guy.components.follower.leader and guy.components.follower.leader.components.inventoryitem and guy.components.follower.leader.components.inventoryitem.owner and inst.components.follower.leader == guy.components.follower.leader.components.inventoryitem.owner)
         end)
 end
 
@@ -91,7 +71,7 @@ local function SleepTest(inst)
 	if inst.components.combat and inst.components.combat.target then return end
 	if inst.components.playerprox:IsPlayerClose() then return end
 	if not inst.sg:HasStateTag("busy") and (not inst.last_wake_time or GetTime() - inst.last_wake_time >= inst.nap_interval) then
-		inst.nap_length = math.random(MIN_POGNAP_LENGTH, MAX_POGNAP_LENGTH)
+		inst.nap_length = math.random(TUNING.MIN_POGNAP_LENGTH, TUNING.MAX_POGNAP_LENGTH)
 		inst.last_sleep_time = GetTime()
 		return true
 	end
@@ -99,25 +79,22 @@ end
 
 local function WakeTest(inst)
 	if not inst.last_sleep_time or GetTime() - inst.last_sleep_time >= inst.nap_length then
-		inst.nap_interval = math.random(MIN_POGNAP_INTERVAL, MAX_POGNAP_INTERVAL)
+		inst.nap_interval = math.random(TUNING.MIN_POGNAP_INTERVAL, TUNING.MAX_POGNAP_INTERVAL)
 		inst.last_wake_time = GetTime()
 		return true
 	end
 end
 
-
 local function ShouldAcceptItem(inst, item)
 	if inst.components.health and inst.components.health:IsDead() then return false end
-
 	if item.components.edible and (
-		item.components.edible.foodtype == "MEAT" or 
-		item.components.edible.foodtype == "VEGGIE" or 
+		item.components.edible.foodtype == "MEAT" or
+		item.components.edible.foodtype == "VEGGIE" or
 		item.components.edible.foodtype == "SEEDS" or
 		item.components.edible.foodtype == "INSECT" or
 		item.components.edible.foodtype == "GENERIC") then
 		return true
 	end
-
 	return false
 end
 
@@ -131,37 +108,64 @@ local function OnGetItemFromPlayer(inst, giver, item)
 	    elseif giver.components.leader then
 	    	inst.SoundEmitter:PlaySound("dontstarve/common/makeFriend")
 			giver.components.leader:AddFollower(inst)
-	        inst.components.follower:AddLoyaltyTime(POG_LOYALTY_PER_ITEM)
-	    end       
+	        inst.components.follower:AddLoyaltyTime(TUNING.POG_LOYALTY_PER_ITEM)
+	    end
 	end
-    
 end
 
-local function OnRefuseItem(inst, giver, item)	
+local function OnRefuseItem(inst, giver, item)
 	if inst.components.sleeper:IsAsleep() then
         inst.components.sleeper:WakeUp()
-    elseif not inst.sg:HasStateTag("busy") then    
+    elseif not inst.sg:HasStateTag("busy") then
     	inst:FacePoint(giver.Transform:GetWorldPosition())
 		inst.sg:GoToState("refuse")
     end
 end
 
+local function OnPlayerNear(inst)
+    inst:AddTag("can_beg")
+    if inst.components.sleeper:IsAsleep() then
+        inst.components.sleeper:WakeUp()
+    end
+end
+
+local function OnPlayerFar(inst)
+    inst:RemoveTag("can_beg")
+end
+
+local function beginaporkalypse(inst)
+    inst.AnimState:SetBuild("pog_feral_build")
+end
+
+local function endaporkalypse(inst)
+    inst.AnimState:SetBuild("pog_basic")
+end
+
+local function exitlimbo(inst)
+    local aporkalypse = GetAporkalypse()
+    if not (aporkalypse and aporkalypse:IsActive()) then
+        inst.AnimState:SetBuild("pog_feral_build")
+    end
+end
+
 local function fn()
 	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-	local sound = inst.entity:AddSoundEmitter()
-	local shadow = inst.entity:AddDynamicShadow()
-	shadow:SetSize(2,0.75)
-	trans:SetFourFaced()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
-	MakeCharacterPhysics(inst, 1, 0.5)
---	MakePoisonableCharacter(inst)
+	inst.DynamicShadow:SetSize(2,0.75)
 
-	anim:SetBank("pog")
-	anim:SetBuild("pog_actions")
-	anim:PlayAnimation("idle_loop")
+	inst.Transform:SetFourFaced()
+
+	MakeCharacterPhysics(inst, 1, 0.5)
+	MakePoisonableCharacter(inst)
+
+	inst.AnimState:SetBank("pog")
+    inst.AnimState:SetBuild("pog_actions")
+    inst.AnimState:PlayAnimation("idle_loop")
 
 	inst:AddTag("smallcreature")
 	inst:AddTag("animal")
@@ -170,36 +174,41 @@ local function fn()
 
     inst.entity:SetPristine()
 
-	if not TheWorld.ismastersim then
-		return inst
-	end	
-	
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+	inst:AddComponent("inventory")
+	inst:AddComponent("knownlocations")
+    inst:AddComponent("herdmember")
 	inst:AddComponent("inspectable")
 
 	inst:AddComponent("health")
-	inst.components.health:SetMaxHealth(POG_HEALTH)
+	inst.components.health:SetMaxHealth(TUNING.POG_HEALTH)
 
-	inst:AddComponent("combat")
-	inst.components.combat:SetDefaultDamage(POG_DAMAGE)
-	inst.components.combat:SetRange(POG_ATTACK_RANGE)
-    inst.components.combat:SetAttackPeriod(POG_ATTACK_PERIOD)
-    inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
-    inst.components.combat:SetRetargetFunction(3, RetargetFn)
-    inst.components.combat:SetHurtSound("dontstarve_DLC003/creatures/pog/hit")
+
+
     inst:ListenForEvent("attacked", OnAttacked)
     inst.components.combat.battlecryinterval = 20
 
 	inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable('pog') 
+    inst.components.lootdropper:SetChanceLootTable('pog')
 
 	inst:AddComponent("follower")
-    inst.components.follower.maxfollowtime = POG_LOYALTY_MAXTIME
-    
+    inst.components.follower.maxfollowtime = TUNING.POG_LOYALTY_MAXTIME
+
     inst:AddComponent("eater")
     inst.components.eater:SetCanEatHorrible()
     inst.components.eater.strongstomach = true -- can eat monster meat!
 
-	inst:AddComponent("inventory")
+	inst:AddComponent("locomotor")
+	inst.components.locomotor.walkspeed = TUNING.POG_WALK_SPEED
+	inst.components.locomotor.runspeed = TUNING.POG_RUN_SPEED
+
+    inst:AddComponent("playerprox")
+    inst.components.playerprox:SetDist(4,6)
+    inst.components.playerprox:SetOnPlayerNear(OnPlayerNear)
+    inst.components.playerprox:SetOnPlayerFar(OnPlayerFar)
 
 	inst:AddComponent("trader")
     inst.components.trader:SetAcceptTest(ShouldAcceptItem)
@@ -207,58 +216,36 @@ local function fn()
     inst.components.trader.onrefuse = OnRefuseItem
     inst.components.trader.deleteitemonaccept = false
 
-    inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(4,6)
-    inst.components.playerprox:SetOnPlayerNear(function(inst)
-    	inst:AddTag("can_beg")
-    	if inst.components.sleeper:IsAsleep() then
-    		inst.components.sleeper:WakeUp()
-    	end
-    end)
-    inst.components.playerprox:SetOnPlayerFar(function(inst)
-    	inst:RemoveTag("can_beg")
-    end)    
+	inst:AddComponent("combat")
+	inst.components.combat:SetDefaultDamage(TUNING.POG_DAMAGE)
+	inst.components.combat:SetRange(TUNING.POG_ATTACK_RANGE)
+    inst.components.combat:SetAttackPeriod(TUNING.POG_ATTACK_PERIOD)
+    inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
+    inst.components.combat:SetRetargetFunction(3, RetargetFn)
+    inst.components.combat:SetHurtSound("pl/creatures/pog/hit")
 
 	inst:AddComponent("sleeper")
-    --inst.components.sleeper:SetResistance(3)
+    --inst.cmponents.sleepoer:SetResistance(3)
     inst.components.sleeper.testperiod = GetRandomWithVariance(6, 2)
     inst.last_sleep_time = nil
     inst.last_wake_time = GetTime()
-    inst.nap_interval = math.random(MIN_POGNAP_INTERVAL, MAX_POGNAP_INTERVAL)
-    inst.nap_length = math.random(MIN_POGNAP_LENGTH, MAX_POGNAP_LENGTH)
+    inst.nap_interval = math.random(TUNING.MIN_POGNAP_INTERVAL, TUNING.MAX_POGNAP_INTERVAL)
+    inst.nap_length = math.random(TUNING.MIN_POGNAP_LENGTH, TUNING.MAX_POGNAP_LENGTH)
     inst.components.sleeper:SetWakeTest(WakeTest)
     inst.components.sleeper:SetSleepTest(SleepTest)
 
-	inst:AddComponent("locomotor")
-	inst.components.locomotor.walkspeed = POG_WALK_SPEED
-	inst.components.locomotor.runspeed = POG_RUN_SPEED
-	
-    -- boat hopping setup
-    inst.components.locomotor:SetAllowPlatformHopping(true)
-    inst:AddComponent("embarker")		
-
-	inst:AddComponent("knownlocations")
-    inst:AddComponent("herdmember")
-
+    MakeHauntablePanic(inst)
 	MakeSmallBurnableCharacter(inst, "pog_chest", Vector3(1,0,1))
 	MakeSmallFreezableCharacter(inst)
 
---[[
-	inst.special_action = function (act)
-        inst.sg:GoToState("desk_pre")
-    end
-]]
-
-
-	inst:ListenForEvent("beginaporkalypse", function() inst.AnimState:SetBuild("pog_feral_build") end, TheWorld)
-	inst:ListenForEvent("endaporkalypse", function() inst.AnimState:SetBuild("pog_basic") end, TheWorld)
-	inst:DoTaskInTime(0.2, function(inst) if TheWorld.components.aporkalypse and TheWorld.components.aporkalypse.aporkalypse_active == true then inst.AnimState:SetBuild("pog_feral_build") else inst.AnimState:SetBuild("pog_basic") end end)
-
-	local brain = require("brains/pogbrain")
 	inst:SetBrain(brain)
 	inst:SetStateGraph("SGpog")
+
+	inst:ListenForEvent("beginaporkalypse", beginaporkalypse, TheWorld)
+	inst:ListenForEvent("endaporkalypse", endaporkalypse, TheWorld)
+	inst:ListenForEvent("exitlimbo", exitlimbo)
 
 	return inst
 end
 
-return Prefab("creatures/pog", fn, assets, prefabs)
+return Prefab("pog", fn, assets, prefabs)

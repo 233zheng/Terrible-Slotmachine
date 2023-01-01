@@ -32,7 +32,7 @@ local function DisableLight(inst)
     inst.Light:Enable(false)
 end
 local function setfires(x,y,z)
-    for i, v in ipairs(TheSim:FindEntities(x, 0, z, RADIUS, nil, { "laser", "DECOR", "INLIMBO" })) do 
+    for i, v in ipairs(TheSim:FindEntities(x, 0, z, RADIUS, nil, { "laser", "DECOR", "INLIMBO" })) do
         if v.components.burnable then
             v.components.burnable:Ignite()
         end
@@ -51,7 +51,8 @@ local function DoDamage(inst, targets, skiptoss)
         inst:DoTaskInTime(4 * FRAMES, SetLightRadius, .5)
         inst:DoTaskInTime(5 * FRAMES, DisableLight)
 
-        SpawnPrefab("laserscorch").Transform:SetPosition(x, 0, z)
+        local laserscorch = SpawnPrefab("laserscorch")
+        laserscorch.Transform:SetPosition(x, 0, z)
         local fx = SpawnPrefab("lasertrail")
         fx.Transform:SetPosition(x, 0, z)
         fx:FastForward(GetRandomMinMax(.3, .7))
@@ -61,7 +62,7 @@ local function DoDamage(inst, targets, skiptoss)
     setfires(x,y,z)
     inst.components.combat.ignorehitrange = true
     for i, v in ipairs(TheSim:FindEntities(x, 0, z, RADIUS + 3, nil, { "laser", "DECOR", "INLIMBO" })) do  --  { "_combat", "pickable", "campfire", "CHOP_workable", "HAMMER_workable", "MINE_workable", "DIG_workable" }
-        if not targets[v] and v:IsValid() and not v:IsInLimbo() and not (v.components.health ~= nil and v.components.health:IsDead()) and not v:HasTag("laser_immune") then            
+        if not targets[v] and v:IsValid() and not v:IsInLimbo() and not (v.components.health ~= nil and v.components.health:IsDead()) and not v:HasTag("laser_immune") then
 
 
             local vradius = 0
@@ -77,18 +78,18 @@ local function DoDamage(inst, targets, skiptoss)
                     --V2C: nil action for campfires
                     isworkable =
                         (   work_action == nil and v:HasTag("campfire")    ) or
-                        
+
                             (   work_action == ACTIONS.CHOP or
                                 work_action == ACTIONS.HAMMER or
-                                work_action == ACTIONS.MINE or   
+                                work_action == ACTIONS.MINE or
                                 work_action == ACTIONS.DIG
                             )
                 end
                 if isworkable then
                     targets[v] = true
-                    v:DoTaskInTime(0.6, function() 
+                    v:DoTaskInTime(0.6, function()
                         if v.components.workable then
-                            v.components.workable:Destroy(inst) 
+                            v.components.workable:Destroy(inst)
                             v:DoTaskInTime(0,function() setfires(x,y,z) end)
                         end
                      end)
@@ -109,20 +110,11 @@ local function DoDamage(inst, targets, skiptoss)
                             loot.Transform:SetPosition(x1, 0, z1)
                             skiptoss[loot] = true
                             targets[loot] = true
-                            --Launch(loot, inst, LAUNCH_SPEED)
                         end
                     end
-                    --[[
-                elseif inst.components.combat:CanTarget(v) then
-                    targets[v] = true
-                    if inst.caster ~= nil and inst.caster:IsValid() then
-                        inst.caster.components.combat.ignorehitrange = true
-                        inst.caster.components.combat:DoAttack(v)
-                        inst.caster.components.combat.ignorehitrange = false
-                    else
-                        inst.components.combat:DoAttack(v)
-                    end                    
 
+                elseif v.components.health then
+                    inst.components.combat:DoAttack(v)
                     if v:IsValid() then
                         if not v.components.health or not v.components.health:IsDead() then
                             if v.components.freezable ~= nil then
@@ -140,28 +132,7 @@ local function DoDamage(inst, targets, skiptoss)
                                 end
                             end
                         end
-                    end]]
-
-                elseif v.components.health then                    
-                    inst.components.combat:DoAttack(v)                
-                    if v:IsValid() then
-                        if not v.components.health or not v.components.health:IsDead() then
-                            if v.components.freezable ~= nil then
-                                if v.components.freezable:IsFrozen() then
-                                    v.components.freezable:Unfreeze()
-                                elseif v.components.freezable.coldness > 0 then
-                                    v.components.freezable:AddColdness(-2)
-                                end
-                            end
-                            if v.components.temperature ~= nil then
-                                local maxtemp = math.min(v.components.temperature:GetMax(), 10)
-                                local curtemp = v.components.temperature:GetCurrent()
-                                if maxtemp > curtemp then
-                                    v.components.temperature:DoDelta(math.min(10, maxtemp - curtemp))
-                                end
-                            end
-                        end
-                    end                   
+                    end
                 end
                 if v:IsValid() and v.AnimState then
                     SpawnPrefab("laserhit"):SetTarget(v)
@@ -176,7 +147,7 @@ local function DoDamage(inst, targets, skiptoss)
             local radius = 0
             if v.Physics then
                 radius = v.Physics:GetRadius()
-            end            
+            end
             local range = RADIUS + radius
             if v:GetDistanceSqToPoint(Vector3(x, y, z) ) < range * range then
                 if v.components.mine ~= nil then
@@ -213,7 +184,7 @@ local function common_fn(isempty)
     local inst = CreateEntity()
     inst.entity:AddTransform()
     inst.entity:AddNetwork()
-	
+
     if not isempty then
         inst.entity:AddAnimState()
         inst.AnimState:SetBank("laser_hits_sparks")
@@ -241,8 +212,8 @@ local function common_fn(isempty)
 
 	if not TheWorld.ismastersim then
 		return inst
-	end	
-	
+	end
+
 
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(LASER_DAMAGE)

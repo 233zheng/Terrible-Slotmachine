@@ -21,14 +21,12 @@ local FOOD_TAGS = {"edible"}
 local STEAL_TAGS = {"structure"}
 local NO_TAGS = {"FX", "NOCLICK", "DECOR","INLIMBO", "burnt"}
 
-
 local Ancient_hulkBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
 function Ancient_hulkBrain:OnStart()
 
-    --local clock = GetClock()
 
     local root =
         PriorityNode(
@@ -36,9 +34,9 @@ function Ancient_hulkBrain:OnStart()
             ChaseAndAttack(self.inst, 60, 120, nil, nil, true),
             Wander(self.inst, function() return self.inst:GetPosition() end, 20),
         }, .25)
-    
+
     self.bt = BT(self.inst, root)
-         
+
 end
 
 function Ancient_hulkBrain:OnInitializationComplete()

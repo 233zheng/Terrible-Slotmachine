@@ -5,6 +5,8 @@ require "behaviours/panic"
 require "behaviours/wander"
 require "behaviours/chaseandattack"
 
+local BrainCommon = require "brains/braincommon"
+
 local MAX_CHASE_TIME = 60
 local MAX_CHASE_DIST = 40
 local SEE_FOOD_DIST = 30
@@ -69,6 +71,7 @@ end
 
 function VampireBatBrain:OnStart()
     local root = PriorityNode({
+        BrainCommon.PanicTrigger(self.inst),
         EventNode(self.inst, "panic",
             ParallelNode{
                 Panic(self.inst),

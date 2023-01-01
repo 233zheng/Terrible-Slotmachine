@@ -1,4 +1,6 @@
 local TUNING = GLOBAL.TUNING
+local GetModConfigData = GetModConfigData
+GLOBAL.setfenv(1, GLOBAL)
 
 local seg_time = 30 --each segment of the clock is 30 seconds
 local total_day_time = seg_time*16
@@ -17,7 +19,6 @@ local wilson_health = 150
 local calories_per_day = 75
 
 local wilson_attack_period = .5
------------------------
 
 local perish_warp = 1--/200
 
@@ -44,7 +45,7 @@ TUNING.ADULT_FLYTRAP_ATTACK_DIST = 4
 TUNING.ADULT_FLYTRAP_STOPATTACK_DIST = 6
 
 TUNING.SPIDER_MONKEY_SPEED_AGITATED = 5.5  --4
-TUNING.SPIDER_MONKEY_SPEED = 5.5 --2		
+TUNING.SPIDER_MONKEY_SPEED = 5.5 --2
 TUNING.SPIDER_MONKEY_HEALTH = 550
 
 TUNING.SPIDER_MONKEY_DAMAGE = 60
@@ -95,7 +96,9 @@ TUNING.ANCIENT_HULK_MELEE_RANGE = 5.5
 TUNING.ANCIENT_HULK_ATTACK_RANGE = 5.5
 
 TUNING.KLAUS_ENRAGE_SCALE = 1.8
+TUNING.BEEQUEEN_HEALTH = 18000
+TUNING.DRAGONFLY_SPEED = 4
 
 TUNING.ANCIENT_HULKHEALTH = GetModConfigData("ANCIENT_HULKHEALTH")
-TUNING.DRAGONFLYHEALTH = GetModConfigData("DRAGONFLYHEALTH")
+TUNING.DRAGONFLY_HEALTH = GetModConfigData("DRAGONFLY_HEALTH")
 

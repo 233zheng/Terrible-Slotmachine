@@ -19,7 +19,7 @@ local prefabs =
     "thunderbird_fx",
 }
 
-local loot = 
+local loot =
 {
     "drumstick",
     "drumstick",
@@ -30,16 +30,12 @@ local function DoLightning(inst, target)
     local LIGHTNING_COUNT = 3
     local COOLDOWN = 60
 
-    if TheWorld.components.aporkalypse and TheWorld.components.aporkalypse.aporkalypse_active == true then
-        LIGHTNING_COUNT = 10
-    end
-
     for i=1, LIGHTNING_COUNT do
         inst:DoTaskInTime(0.4*i, function ()
             local rad = math.random(4, 8)
             local angle = i*((4*PI)/LIGHTNING_COUNT)
             local pos = Vector3(target.Transform:GetWorldPosition()) + Vector3(rad*math.cos(angle), 0, rad*math.sin(angle))
-            TheWorld:PushEvent("ms_sendlightningstrike", pos) 
+            TheWorld:PushEvent("ms_sendlightningstrike", pos)
         end)
     end
 
@@ -61,45 +57,46 @@ end
 
 local function fn()
 	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-	local sound = inst.entity:AddSoundEmitter()
-	local shadow = inst.entity:AddDynamicShadow()
-	shadow:SetSize( 1.5, .75 )
-    inst.Transform:SetFourFaced()
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
+    inst.entity:AddLight()
+
+	inst.DynamicShadow:SetSize( 1.5, .75 )
+    inst.Transform:SetFourFaced()
 
     MakeCharacterPhysics(inst, 50, .5)
---    MakePoisonableCharacter(inst)
-     
-    anim:SetBank("thunderbird")
-    anim:SetBuild("thunderbird")
-    anim:Hide("hat")
+
+    inst.AnimState:SetBank("thunderbird")
+    inst.AnimState:SetBuild("thunderbird")
+    inst.AnimState:Hide("hat")
 
     inst:AddTag("character")
     inst:AddTag("berrythief")
-	
-    local light = inst.entity:AddLight()
-    light:SetFalloff(.7)
-    light:SetIntensity(.75)
-    light:SetRadius(2.5)
-    light:SetColour(120/255, 120/255, 120/255)
-    light:Enable(true)	
- 
+
+    inst.Light:SetFalloff(.7)
+    inst.Light:SetIntensity(.75)
+    inst.Light:SetRadius(2.5)
+    inst.Light:SetColour(120/255, 120/255, 120/255)
+    inst.Light:Enable(true)
+
     inst.entity:SetPristine()
 
 	if not TheWorld.ismastersim then
 		return inst
 	end
- 
+
     inst:AddComponent("eater")
     inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
-    
+
     inst:AddComponent("sleeper")
     inst.components.sleeper:SetWakeTest( function() return true end)    --always wake up if we're asleep
 
     inst:AddComponent("combat")
     inst.components.combat.hiteffectsymbol = "pig_torso"
+
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(TUNING.PERD_HEALTH)
     inst.components.combat:SetDefaultDamage(TUNING.PERD_DAMAGE)
@@ -107,23 +104,22 @@ local function fn()
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetLoot(loot)
-    	
+
     inst:AddComponent("inventory")
     inst:AddComponent("inspectable")
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.runspeed = THUNDERBIRD_RUN_SPEED
     inst.components.locomotor.walkspeed = THUNDERBIRD_WALK_SPEED
-	
+
     -- boat hopping setup
     inst.components.locomotor:SetAllowPlatformHopping(true)
-    inst:AddComponent("embarker")			
-    
-    inst:SetStateGraph("SGthunderbird")	
+    inst:AddComponent("embarker")
+
+    inst:SetStateGraph("SGthunderbird")
     local brain = require "brains/thunderbirdbrain"
     inst:SetBrain(brain)
 
-    
     inst.special_action = function (act)
         inst.sg:GoToState("thunder_attack")
     end
@@ -135,22 +131,22 @@ local function fn()
     MakeMediumBurnableCharacter(inst, "pig_torso")
 
     inst.components.burnable.lightningimmune = true
-    
+
     return inst
 end
 
 local function fx_fn()
     local inst = CreateEntity()
-    local trans = inst.entity:AddTransform()
-    local anim = inst.entity:AddAnimState()
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
     inst:AddTag("NOCLICK")
-    anim:SetBank("thunderbird_fx")
-    anim:SetBuild("thunderbird_fx")
+    inst.AnimState:SetBank("thunderbird_fx")
+    inst.AnimState:SetBuild("thunderbird_fx")
 
     return inst
 end
 
-return Prefab( "forest/animals/thunderbird", fn, assets, prefabs),
-       Prefab( "forest/animals/thunderbird_fx", fx_fn, assets, prefabs)
+return Prefab("thunderbird", fn, assets, prefabs),
+       Prefab("thunderbird_fx", fx_fn, assets, prefabs)

@@ -1,20 +1,17 @@
 require "brains/spidermonkeybrain"
 require "stategraphs/SGspidermonkey"
 
-local assets = 
+local assets =
 {
-	--Asset("ANIM", "anim/kiki_basic.zip"),
-	--Asset("ANIM", "anim/spidermonkey_build.zip"),
     Asset("ANIM", "anim/spiderape_basics.zip"),
     Asset("ANIM", "anim/spiderape_build.zip"),
 
 	Asset("SOUND", "sound/monkey.fsb"),
 }
 
-local prefabs = 
+local prefabs =
 {
 	"poop",
---	"monkeyprojectile",
 	"monstermeat",
 	"spidergland",
 }
@@ -26,7 +23,7 @@ local MAX_TARGET_SHARES     = 5
 local SHARE_TARGET_DIST     = 40
 
 local SPIDER_MONKEY_SPEED_AGITATED = 5.5
-local SPIDER_MONKEY_SPEED = 5.5		
+local SPIDER_MONKEY_SPEED = 5.5
 local SPIDER_MONKEY_HEALTH = 600
 
 local SPIDER_MONKEY_DAMAGE = 50
@@ -50,14 +47,10 @@ local MONKEY_RANGED_RANGE = 17
 local MONKEY_MOVE_SPEED = 7
 local MONKEY_NIGHTMARE_CHASE_DIST = 40
 
-
-
-
-
 SetSharedLootTable('spidermonkey',
 {
     {'monstermeat',     1.0},
-    {'monstermeat',     1.0},    
+    {'monstermeat',     1.0},
     {'spidergland',    0.75},
     {'beardhair',      0.75},
     {'beardhair',      0.75},
@@ -65,28 +58,13 @@ SetSharedLootTable('spidermonkey',
     {'silk',           0.25},
 })
 
-local function oneat(inst)
-	-- Monkey ate some food. Give him some poop!
-	if inst.components.inventory then
-		local maxpoop = 3
-		local poopstack = inst.components.inventory:FindItem(function(item) return item.prefab == "poop" end)
-		if poopstack and poopstack.components.stackable.stacksize < maxpoop then
-			local newpoop = SpawnPrefab("poop")
-			inst.components.inventory:GiveItem(newpoop)
-		elseif not poopstack then
-			local newpoop = SpawnPrefab("poop")
-			inst.components.inventory:GiveItem(newpoop)
-		end
-	end
-end
-
 local function OnAttacked(inst, data)
 	inst.components.combat:SuggestTarget(data.attacker)
 end
 
 local function FindThreatToNest(inst)
     local notags = {"FX", "NOCLICK", "INLIMBO", "spidermonkey", "monkey"}
-    local yestags = {"character", "monster"}
+    local yestags = {"player", "monster"}
     if inst.components.homeseeker and inst.components.homeseeker:HasHome() then
         return FindEntity(inst.components.homeseeker.home, SPIDER_MONKEY_DEFEND_DIST, function(guy)
             return guy.components.health
@@ -101,7 +79,7 @@ local function retargetfn(inst)
 
     if not newtarget then
         local notags = {"FX", "NOCLICK", "INLIMBO", "aquatic", "spidermonkey", "monkey"}
-        local yestags = {"character", "monster"}
+        local yestags = {"player", "monster"}
         newtarget = FindEntity(inst,SPIDER_MONKEY_TARGET_DIST, function(guy)
             return  guy.components.health
                 and not guy.components.health:IsDead()
@@ -109,56 +87,17 @@ local function retargetfn(inst)
         end, nil, notags, yestags)
     end
 
-	return newtarget	
+	return newtarget
 end
 
 local function KeepTarget(inst, target)
     local home = inst.components.homeseeker and inst.components.homeseeker.home
 
-    if home then     
-        return distsq(Vector3(home.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition())) < MAX_CHASEAWAY_DIST*MAX_CHASEAWAY_DIST       
+    if home then
+        return distsq(Vector3(home.Transform:GetWorldPosition()), Vector3(inst.Transform:GetWorldPosition())) < MAX_CHASEAWAY_DIST*MAX_CHASEAWAY_DIST
     else
         return true
     end
-end
-
-local function IsInCharacterList(name)
-	local characters = GetActiveCharacterList()
-
-	for k,v in pairs(characters) do
-		if name == v then
-			return true
-		end
-	end
-end
-
-local function OnMonkeyDeath(inst, data)
-	if data.inst:HasTag("monkey") then	-- A monkey died! 
-		if IsInCharacterList(data.cause) then	-- And it was the player! Run home!
-			-- Drop all items, go home
-			inst:DoTaskInTime(math.random(), function() 
-				if inst.components.inventory then
-					inst.components.inventory:DropEverything(false, true)
-				end
-
-				if inst.components.homeseeker and inst.components.homeseeker.home then
-					inst.components.homeseeker.home:PushEvent("monkeydanger")
-				end
-			end)
-		end
-	end
-end
-
-local function onpickup(inst, data)
-	if data.item then
-		if data.item.components.equippable and
-		data.item.components.equippable.equipslot == EQUIPSLOTS.HEAD and not 
-		inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HEAD) then
-			-- Ugly special case for how the PICKUP action works.
-			-- Need to wait until PICKUP has called "GiveItem" before equipping item.
-			inst:DoTaskInTime(0.1, function() inst.components.inventory:Equip(data.item) end)		
-		end
-	end
 end
 
 local function DoFx(inst)
@@ -166,7 +105,7 @@ local function DoFx(inst)
         return
     end
     inst.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
-    
+
     local fx = SpawnPrefab("statue_transition_2")
     if fx then
         fx.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -179,15 +118,13 @@ local function DoFx(inst)
     end
 end
 
-local function onnear(inst) 
+local function onnear(inst)
     inst:AddTag("agitated")
     inst:PushEvent("agitated")
-    -- inst.components.locomotor.walkspeed = SPIDER_MONKEY_SPEED_AGITATED
 end
 
-local function onfar(inst) 
+local function onfar(inst)
     inst:RemoveTag("agitated")
-    -- inst.components.locomotor.walkspeed = SPIDER_MONKEY_SPEED
 end
 
 local function OnSave(inst, data)
@@ -200,25 +137,20 @@ end
 
 local function fn()
 	local inst = CreateEntity()
-	local trans = inst.entity:AddTransform()
-	local anim = inst.entity:AddAnimState()
-	local sound = inst.entity:AddSoundEmitter()	
-    inst.soundtype = ""
-	local shadow = inst.entity:AddDynamicShadow()
-	shadow:SetSize(2, 1.25)
+	inst.entity:AddTransform()
+	inst.entity:AddAnimState()
+	inst.entity:AddSoundEmitter()
+	inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
-	
+
+    inst.DynamicShadow:SetSize(2, 1.25)
 	inst.Transform:SetFourFaced()
 
-	--inst.Transform:SetScale(2.2, 2.2, 2.2)
 	MakeCharacterPhysics(inst, 40, 1.5)
-    MakeMediumBurnableCharacter(inst)
-    MakeMediumFreezableCharacter(inst)
 
-    anim:SetBank("spiderape")
-	anim:SetBuild("SpiderApe_build")
-	
-	anim:PlayAnimation("idle_loop", true)
+    inst.AnimState:SetBank("spiderape")
+	inst.AnimState:SetBuild("SpiderApe_build")
+	inst.AnimState:PlayAnimation("idle_loop", true)
 
 	inst:AddTag("spidermonkey")
 	inst:AddTag("animal")
@@ -227,20 +159,37 @@ local function fn()
 
 	if not TheWorld.ismastersim then
 		return inst
-	end	
-	
+	end
+
 	inst:AddComponent("inventory")
-
 	inst:AddComponent("inspectable")
+    inst:AddComponent("knownlocations")
+	inst:AddComponent("sleeper")
 
-	inst:AddComponent("thief")
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(SPIDER_MONKEY_HEALTH)
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("spidermonkey")
+    inst.components.lootdropper.droppingchanceloot = false
+
+	inst:AddComponent("sanityaura")
+    inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
+
+    inst:AddComponent("herdmember")
+    inst.components.herdmember:SetHerdPrefab("spider_monkey_herd")
+
+	inst:AddComponent("playerprox")
+    inst.components.playerprox:SetDist(20, 23)
+    inst.components.playerprox:SetOnPlayerNear(onnear)
+    inst.components.playerprox:SetOnPlayerFar(onfar)
 
     inst:AddComponent("locomotor")
     inst.components.locomotor:SetSlowMultiplier(1)
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { ignorecreep = false }
     inst.components.locomotor.walkspeed = SPIDER_MONKEY_SPEED_AGITATED
-    inst.components.locomotor.runspeed = SPIDER_MONKEY_SPEED_AGITATED    
+    inst.components.locomotor.runspeed = SPIDER_MONKEY_SPEED_AGITATED
 
     inst:AddComponent("combat")
     inst.components.combat:SetAttackPeriod(SPIDER_MONKEY_ATTACK_PERIOD)
@@ -249,9 +198,6 @@ local function fn()
     inst.components.combat:SetDefaultDamage(SPIDER_MONKEY_DAMAGE)
     inst.components.combat:SetKeepTargetFunction(KeepTarget)
 
-    inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(SPIDER_MONKEY_HEALTH)
-    
     inst:AddComponent("periodicspawner")
     inst.components.periodicspawner:SetPrefab("poop")
     inst.components.periodicspawner:SetRandomTimes(200, 400)
@@ -259,44 +205,22 @@ local function fn()
     inst.components.periodicspawner:SetMinimumSpacing(15)
     inst.components.periodicspawner:Start()
 
-    inst:AddComponent("lootdropper")
-    inst.components.lootdropper:SetChanceLootTable("spidermonkey")
-    inst.components.lootdropper.droppingchanceloot = false
-
-	inst:AddComponent("eater")
-    inst.components.eater:SetDiet({ FOODTYPE.VEGGIE }, { FOODTYPE.VEGGIE })
-	inst.components.eater:SetOnEatFn(oneat)
-
-	inst:AddComponent("sleeper")
-	-- inst.components.sleeper:SetNocturnal()
-	
-    inst:AddComponent("knownlocations")
-    inst:AddComponent("herdmember")
-    inst.components.herdmember:SetHerdPrefab("spider_monkey_herd")
-
-	inst:AddComponent("playerprox")
-    inst.components.playerprox:SetDist(20, 23)
-    inst.components.playerprox:SetOnPlayerNear(onnear)
-    inst.components.playerprox:SetOnPlayerFar(onfar)
-    
-	inst:AddComponent("sanityaura")
-    inst.components.sanityaura.aura = -TUNING.SANITYAURA_MED
-
 	local brain = require "brains/spidermonkeybrain"
 	inst:SetBrain(brain)
 	inst:SetStateGraph("SGspidermonkey")
 
+    inst.soundtype = ""
 	inst.curious = true
 
-    inst.listenfn = function(listento, data) OnMonkeyDeath(inst, data) end
-
-	inst:ListenForEvent("onpickup", onpickup)
     inst:ListenForEvent("attacked", OnAttacked)
 
     inst.OnSave = OnSave
     inst.OnLoad = OnLoad
 
+    MakeMediumBurnableCharacter(inst)
+    MakeMediumFreezableCharacter(inst)
+
 	return inst
 end
 
-return Prefab("porkland/monsters/spider_monkey", fn, assets, prefabs)
+return Prefab("spider_monkey", fn, assets, prefabs)
