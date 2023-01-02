@@ -186,11 +186,6 @@ local function fn()
 	inst:AddComponent("health")
 	inst.components.health:SetMaxHealth(TUNING.POG_HEALTH)
 
-
-
-    inst:ListenForEvent("attacked", OnAttacked)
-    inst.components.combat.battlecryinterval = 20
-
 	inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable('pog')
 
@@ -217,6 +212,7 @@ local function fn()
     inst.components.trader.deleteitemonaccept = false
 
 	inst:AddComponent("combat")
+    inst.components.combat.battlecryinterval = 20
 	inst.components.combat:SetDefaultDamage(TUNING.POG_DAMAGE)
 	inst.components.combat:SetRange(TUNING.POG_ATTACK_RANGE)
     inst.components.combat:SetAttackPeriod(TUNING.POG_ATTACK_PERIOD)
@@ -241,6 +237,7 @@ local function fn()
 	inst:SetBrain(brain)
 	inst:SetStateGraph("SGpog")
 
+    inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("beginaporkalypse", beginaporkalypse, TheWorld)
 	inst:ListenForEvent("endaporkalypse", endaporkalypse, TheWorld)
 	inst:ListenForEvent("exitlimbo", exitlimbo)

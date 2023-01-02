@@ -67,7 +67,7 @@ local function posinit(inst)
         inst._camerafocus = nil
     end
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
     if inst.components.lootdropper then
         inst.components.lootdropper:SetChanceLootTable("alterguardian_phase1_init")
@@ -75,11 +75,7 @@ local function posinit(inst)
 
     inst.EnableRollCollision = EnableRollCollision
 
-    if inst.EnableCameraFocus then
-        inst.EnableCameraFocus:Cancel()
-        inst.EnableCameraFocus = nil
     end
-
 end
 
 AddPrefabPostInit("alterguardian_phase1", posinit)

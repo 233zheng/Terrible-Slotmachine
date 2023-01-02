@@ -1,20 +1,63 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable('eyeofterror',
-{
+-- {"eyemaskhat",                      1.00},
+-- {"milkywhites",                     1.00},
+-- {"milkywhites",                     1.00},
+-- {"milkywhites",                     1.00},
+-- {"milkywhites",                     0.50},
+-- {"milkywhites",                     0.50},
+-- {"monstermeat",                     1.00},
+-- {"monstermeat",                     1.00},
+-- {"monstermeat",                     0.50},
+-- {"monstermeat",                     0.50},
 
-})
+local eyeofterrorloot  = {
+    "eyemaskhat",
+    "milkywhites",
+    "milkywhites",
+    "milkywhites",
+    "monstermeat",
+    "monstermeat",
+    "armor_bramble",
+    "wathgrithrhat"
+}
 
-SetSharedLootTable("twinofterror1",
-{
+local twinofterror1loot = {
+    "gears",
+    "gears",
+    "gears",
+    "gears",
+    "transistor",
+    "transistor",
+    "transistor",
+    "nightmarefuel",
+    "nightmarefuel",
+    "nightmarefuel",
+    "trinket_6",
+    "trinket_6",
+    "armor_bramble",
+    "wathgrithrhat",
+    "wathgrithrhat"
+}
 
-})
-
-SetSharedLootTable("twinofterror2",
-{
-
-})
+local twinofterror2loot = {
+    "gears",
+    "gears",
+    "gears",
+    "gears",
+    "transistor",
+    "transistor",
+    "transistor",
+    "nightmarefuel",
+    "nightmarefuel",
+    "nightmarefuel",
+    "trinket_6",
+    "trinket_6",
+    "armor_bramble",
+    "wathgrithrhat",
+    "wathgrithrhat"
+}
 
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "decor", "eyeofterror", "FX", "INLIMBO", "NOCLICK", "notarget", "playerghost", "wall" }
@@ -50,7 +93,8 @@ local RETARGET_ONEOF_TAGS = { "epic", "player" }    -- The eye tries to fight pl
 --     return (use_short_dist and 8 + target:GetPhysicsRadius(0)) or TARGET_DIST
 -- end
 
-local function RetargetFn(inst)
+local function NewRetargetFn(inst)
+    print("正在使用Newretargetfn")
     local range = inst:GetPhysicsRadius(0) + 64
     return FindEntity(
             inst,
@@ -66,7 +110,7 @@ local function RetargetFn(inst)
         )
 end
 
-local _OnAttacked
+local TARGET_DIST = 36
 local function OnAttacked(inst, data, ...)
     -- Target our attackers, unless it's one of our soldiers somehow.
     if data.attacker and not inst.components.commander:IsSoldier(data.attacker) then
@@ -75,9 +119,6 @@ local function OnAttacked(inst, data, ...)
             inst.components.combat:SetTarget(data.attacker)
             inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
         end
-    end
-    if _OnAttacked ~= nil then
-        _OnAttacked(inst, data, ...)
     end
 end
 
@@ -111,7 +152,7 @@ local function OnCollide(inst, other, ...)
         on_other_collided(inst, other)
     end
     if _OnCollide ~= nil then
-        OnCollide(inst, other, ...)
+        _OnCollide(inst, other, ...)
     end
 end
 
@@ -343,12 +384,24 @@ end
 
 local function postinit(inst)
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
-    inst:RemoveComponent("stuckdetection")
+    -- if inst.components.stuckdetection then
+    --     inst:RemoveComponent("stuckdetection")
+    -- end
 
     if inst.components.combat then
-        inst.components.combat:SetRetargetFunction(1, RetargetFn)
+        inst.components.combat:SetRetargetFunction(1, NewRetargetFn)
+    end
+
+    if inst.components.lootdropper then
+        if inst.prefab == "eyeofterror" then
+            inst.components.lootdropper:SetLoot(eyeofterrorloot)
+            elseif inst.prefab == "twinofterror1" then
+            inst.components.lootdropper:SetLoot(twinofterror1loot)
+            else
+            inst.components.lootdropper:SetLoot(twinofterror2loot)
+        end
     end
 
     if inst.components.health then
@@ -361,10 +414,12 @@ local function postinit(inst)
 
     inst:ListenForEvent("attacked", OnAttacked)
 	inst:ListenForEvent("enterlimbo", OnEnterLimbo)
+
+    end
 end
 
 local function twinmanagerpostinit(inst)
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
     inst.IsDying = twinsmanager_isdying
 
@@ -379,10 +434,10 @@ local function twinmanagerpostinit(inst)
     inst:ListenForEvent("arrive", spawn_arriving_twins)
 
     inst.OnLoadPostPass = OnTwinManagerLoadPostPass
-
+    end
 end
 
 AddPrefabPostInit("eyeofterror", postinit)
 AddPrefabPostInit("twinofterror1", postinit)
 AddPrefabPostInit("twinofterror2", postinit)
-AddPrefabPostInit("twinmanager", twinmanagerpostinit)
+-- AddPrefabPostInit("twinmanager", twinmanagerpostinit)

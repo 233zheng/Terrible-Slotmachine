@@ -29,12 +29,12 @@ local prefabs =
 {
     "groundpound_fx",
     "groundpoundring_fx",
-    "ancient_robots_assembly",
-    "rock_basalt",
-    "living_artifact",
+    -- "ancient_robots_assembly",
+    -- "rock_basalt",
+    -- "living_artifact",
     "ancient_hulk_orb_small",
-    "infused_iron",
-    "living_artifact_blueprint",
+    -- "infused_iron",
+    -- "living_artifact_blueprint",
 }
 
 SetSharedLootTable('ancient_hulk',
@@ -426,9 +426,9 @@ local function LaunchProjectile(inst, targetpos)
     local rangesq = dx * dx + dz * dz
     local maxrange = TUNING.FIRE_DETECTOR_RANGE
     local speed = easing.linear(rangesq, 15, 3, maxrange * maxrange)
-    projectile.components.complexprojectile:SetHorizontalSpeed(speed)
-    projectile.components.complexprojectile:SetGravity(-25)
-    projectile.components.complexprojectile:Launch(targetpos, inst, inst)
+    projectile.components.complexprojectile_hamlet:SetHorizontalSpeed(speed)
+    projectile.components.complexprojectile_hamlet:SetGravity(-25)
+    projectile.components.complexprojectile_hamlet:Launch(targetpos, inst, inst)
     projectile.owner = inst
 end
 
@@ -448,9 +448,9 @@ local function ShootProjectile(inst, targetpos)
    -- inst.shotspawn = nil
 
     local speed =  60 --  easing.linear(rangesq, 15, 3, maxrange * maxrange)
-    projectile.components.complexprojectile:SetHorizontalSpeed(speed)
-    projectile.components.complexprojectile:SetGravity(-25)
-    projectile.components.complexprojectile:Launch(targetpos, inst, inst)
+    projectile.components.complexprojectile_hamlet:SetHorizontalSpeed(speed)
+    projectile.components.complexprojectile_hamlet:SetGravity(-25)
+    projectile.components.complexprojectile_hamlet:Launch(targetpos, inst, inst)
     projectile.owner = inst
 end
 
@@ -704,9 +704,10 @@ local function onnearmine(inst, ents)
             --explode, end beep
         inst.SoundEmitter:KillSound("boom_loop")
             local player = GetClosestInstWithTag("player", inst, SHAKE_DIST)
-            if player then
-                player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 2, SHAKE_DIST)
-            end
+            -- if player then
+                -- player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 2, SHAKE_DIST)
+                -- player:ShakeCamera(inst, "VERTICAL", 0.5, 0.03, 2, SHAKE_DIST)
+            -- end
             inst:Hide()
             local ring = SpawnPrefab("laser_ring")
             ring.Transform:SetPosition(inst.Transform:GetWorldPosition())
@@ -753,9 +754,9 @@ local function minefn(Sim)
 
     inst:AddComponent("fader")
     inst:AddComponent("locomotor")
-    inst:AddComponent("complexprojectile")
-    inst.components.complexprojectile:SetOnHit(OnHit)
-    inst.components.complexprojectile.yOffset = 2.5
+    inst:AddComponent("complexprojectile_hamlet")
+    inst.components.complexprojectile_hamlet:SetOnHit(OnHit)
+    inst.components.complexprojectile_hamlet.yOffset = 2.5
 
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.ANCIENT_HULK_MINE_DAMAGE)
@@ -772,10 +773,11 @@ local function minefn(Sim)
 end
 
 local function OnHitOrb(inst, dist)
-    local player = GetClosestInstWithTag("player", inst, SHAKE_DIST)
-    if player then
-        player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
-    end
+    -- local player = GetClosestInstWithTag("player", inst, SHAKE_DIST)
+    -- if player then
+        -- player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
+        -- player:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
+    -- end
     inst.AnimState:PlayAnimation("impact")
     inst:ListenForEvent("animover", function()
         if inst.AnimState:IsCurrentAnimation("impact") then
@@ -820,9 +822,9 @@ local function orbfn(Sim)
 
     inst:AddComponent("fader")
     inst:AddComponent("locomotor")
-    inst:AddComponent("complexprojectile")
-    inst.components.complexprojectile:SetOnHit(OnHitOrb)
-    inst.components.complexprojectile.yOffset = 2.5
+    inst:AddComponent("complexprojectile_hamlet")
+    inst.components.complexprojectile_hamlet:SetOnHit(OnHitOrb)
+    inst.components.complexprojectile_hamlet.yOffset = 2.5
 
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.ANCIENT_HULK_MINE_DAMAGE)
@@ -900,10 +902,11 @@ end
 
 local function OnCollidecharge(inst,other)
     inst.Physics:SetMotorVelOverride(0,0,0)
-    local player = GetClosestInstWithTag("player", inst, SHAKE_DIST)
-    if player then
-        player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
-    end
+    -- local player = GetClosestInstWithTag("player", inst, SHAKE_DIST)
+    -- if player then
+        -- player.components.playercontroller:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
+        -- player:ShakeCamera(inst, "VERTICAL", 0.4, 0.03, 1.5, SHAKE_DIST)
+    -- end
     inst.AnimState:PlayAnimation("impact")
     inst:ListenForEvent("animover", function()
         if inst.AnimState:IsCurrentAnimation("impact") then

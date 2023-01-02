@@ -1,7 +1,7 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable('toadstool',
+SetSharedLootTable('toadstool2',
 {
     {"froglegs",      1.00},
     {"meat",          1.00},
@@ -48,7 +48,7 @@ local function postinit(inst)
     end
 
     if inst.components.lootdropper then
-        inst.components.lootdropper:SetChanceLootTable("toadstool")
+        inst.components.lootdropper:SetChanceLootTable("toadstool2")
     end
 
 end

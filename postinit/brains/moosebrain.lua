@@ -1,13 +1,9 @@
 local AddBrainPostInit = AddBrainPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-local function GoHome(inst)
-    return nil
-end
-
-local function postinit()
-
-    local NoEscape = WhileNode(function() return self.inst.shouldGoAway end, "Go Away"
+local function postinit(self)
+                                                            --  self.inst.shouldGoAway
+    local NoEscape = WhileNode(function() return end, "Go Away"
     -- DoAction(self.inst, GoHome)
     )
 

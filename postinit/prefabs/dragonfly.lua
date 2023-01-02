@@ -1,7 +1,7 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable('dragonfly',
+SetSharedLootTable('dragonfly2',
 {
     {'armorruins',             1.00},
     {'ruinshat',1.00},
@@ -97,7 +97,7 @@ end
 local _RetargetFn
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","lavae" }
-local function RetargetFn(inst, ...)
+local function NewRetargetFn(inst, ...)
     local range = inst:GetPhysicsRadius(0) + 16
     return FindEntity(
             inst,
@@ -113,29 +113,27 @@ local function RetargetFn(inst, ...)
         )
 end
 
-local _OnAttacked
 local function OnAttacked(inst, data, ...)
     if data.attacker ~= nil then
         local target = inst.components.combat.target
             inst.components.combat:SetTarget(data.attacker)
     end
-    if _OnAttacked ~= nil then
-        _OnAttacked(inst, data, ...)
-    end
 end
 
 local function postinitfn(inst)
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
-	inst:RemoveComponent("stuckdetection")
+    -- if inst.components.stuckdetection then
+    --     inst:RemoveComponent("stuckdetection")
+    -- end
 
     if inst.components.lootdropper then
-        inst.components.lootdropper:SetChanceLootTable('dragonfly')
+        inst.components.lootdropper:SetChanceLootTable('dragonfly2')
     end
 
-    if inst.components.combat then
-        inst.components.combat:SetRetargetFunction(3, RetargetFn)
+    if inst.components.combat ~= nil then
+        inst.components.combat:SetRetargetFunction(3, NewRetargetFn)
     end
 
     inst._ontargetdeathtask = nil
@@ -147,6 +145,7 @@ local function postinitfn(inst)
 
     inst:ListenForEvent("attacked", OnAttacked)
 
+    end
 end
 
 AddPrefabPostInit("dragonfly", postinitfn)

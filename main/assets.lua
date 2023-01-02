@@ -1,7 +1,9 @@
 local STRINGS = GLOBAL.STRINGS
+local resolvefilepath = GLOBAL.resolvefilepath
+local TheNet = GLOBAL.TheNet
 STRINGS.RECIPE_DESC.BLUEPRINT = "Random Blueprint"
 
-GLOBAL.setfenv(1, GLOBAL)
+-- GLOBAL.setfenv(1, GLOBAL)
 
 PrefabFiles =
 {
@@ -9,7 +11,6 @@ PrefabFiles =
     "ancient_hulk",
     "dungball",
     "dungbeetle",
-    "iron",
     "laser",
     "laser_ring",
     "mean_flytrap",
@@ -18,6 +19,9 @@ PrefabFiles =
     "spider_monkey",
     "thunderbird",
     "vampirebat",
+
+    --shadowchesses
+    "shadowchesses",
     --fx
     "hamlet_fx"
 }
@@ -30,6 +34,8 @@ Assets = {
     Asset("ATLAS", "images/mean_flytrap.xml"),
     Asset("IMAGE", "images/mean_flytrap.tex"),
 }
+
+AddMinimapAtlas("images/mean_flytrap.xml")
 
 if not TheNet:IsDedicated() then
     table.insert(Assets, Asset("SOUND", "sound/DLC003_sfx.fsb"))

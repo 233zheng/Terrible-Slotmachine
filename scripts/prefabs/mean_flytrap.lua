@@ -13,14 +13,14 @@ local prefabs =
 {
 	"plantmeat",
 	"vine",
-	"nectar_pod",
+	-- "nectar_pod",
 }
 
 SetSharedLootTable('mean_flytrap',
 {
     {'plantmeat',   1.0},
     {'vine',        0.5},
-    {'nectar_pod',  0.3},
+    -- {'nectar_pod',  0.3},
 })
 
 local SHARE_TARGET_DIST = TUNING.ADULT_FLYTRAP_DAMAGE/2

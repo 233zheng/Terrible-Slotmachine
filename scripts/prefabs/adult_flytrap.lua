@@ -9,9 +9,9 @@ local assets =
 local prefabs =
 {
     "plantmeat",
-    "venus_stalk",
+    -- "venus_stalk",
     "vine",
-    "nectar_pod",
+    -- "nectar_pod",
 }
 
 SetSharedLootTable( 'adult_flytrap',
@@ -20,9 +20,9 @@ SetSharedLootTable( 'adult_flytrap',
     {'plantmeat',   0.5},
     {'vine',        1.0},
     {'vine',        0.5},
-    {'venus_stalk', 1.0},
-    {'nectar_pod',  1.0},
-    {'nectar_pod',  0.3},
+    -- {'venus_stalk', 1.0},
+    -- {'nectar_pod',  1.0},
+    -- {'nectar_pod',  0.3},
 })
 
 local function grownplant(inst)

@@ -1,7 +1,7 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable( 'moose',
+SetSharedLootTable( 'moose2',
 {
     {'meat',             1.00},
     {'meat',             1.00},
@@ -22,7 +22,7 @@ local function postinit(inst)
     if not TheWorld.ismastersim then return end
 
     if inst.components.lootdropper then
-        inst.components.lootdropper:SetChanceLootTable('moose')
+        inst.components.lootdropper:SetChanceLootTable('moose2')
     end
 
 end

@@ -14,13 +14,13 @@ local prefabs =
 {
     "dungball",
     "monstermeat",
-    "chitin",
+    -- "chitin",
 }
 
 SetSharedLootTable( 'dungbeetle',
 {
     {'monstermeat',  1},
-    {'chitin',    0.5},
+    -- {'chitin',    0.5},
 })
 
 local beetlesounds =
@@ -54,15 +54,12 @@ local function HitShake()
 end
 
 local function oncollide(inst, other)
-
-    if inst.sg:HasStateTag("running") and inst:HasTag("hasdung")  then
-
+    if inst:HasTag("hasdung")  then
         if other then
             HitShake()
             falloffdung(inst)
         end
     end
-
 end
 
 local function GetStatus(inst)
@@ -156,4 +153,4 @@ local function fn(Sim)
     return inst
 end
 
-return Prefab( "forest/animals/dungbeetle", fn, assets, prefabs)
+return Prefab("dungbeetle", fn, assets, prefabs)

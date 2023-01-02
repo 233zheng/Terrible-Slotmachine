@@ -8,7 +8,6 @@ local prefabs_post = {
     "beequeen",
     "dragonfly",
     "eyeofterror",
-    "godmaster",
     "klaus",
     "lavae",
     "minotaur",
@@ -16,7 +15,6 @@ local prefabs_post = {
     "mushroomsprout",
     "piratepack",
     "rocks",
-    -- "shadowchesspieces",
     "slotmachine",
     "spiderqueen",
     "stalker",
@@ -25,9 +23,7 @@ local prefabs_post = {
     "treasurechest",
     "twister",
     "warg",
-
-    --???
-    "godmaster",
+    "shadowchesspieces",
 }
 
 local stategraphs_post = {

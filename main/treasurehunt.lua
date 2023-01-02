@@ -165,6 +165,7 @@ SLOTMACHINE_LOOT =
 		slot_flup = 1,
 		slot_pig_royalguard_rich = 1,
 		slot_pigman_royalguard =1,
+        slot_pog = 1,
 		--nothing = 100,
 	},
 	lavaespawns =
@@ -2912,6 +2913,14 @@ local internalloot =
 		loot =
 		{
 			ox= 2,
+		},
+	},
+
+    ["slot_pog"] =
+	{
+		loot =
+		{
+			pog = math.random(3,4),
 		},
 	},
 

@@ -1,11 +1,7 @@
 local AddBrainPostInit = AddBrainPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-local FLEE_DELAY = 999999
-
-local function GetHomePos(inst)
-    return nil
-end
+local FLEE_DELAY = 15
 
 local function postinit(self)
 
@@ -19,6 +15,7 @@ local function postinit(self)
 
 	table.remove(self.bt.root.children, 5)
     table.insert(self.bt.root.children, 5, NoEscape)
+
 end
 
 AddBrainPostInit("beequeenbrain", postinit)

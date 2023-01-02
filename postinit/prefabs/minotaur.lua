@@ -1,31 +1,28 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable('minotaur',
-{
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-	{"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-	{"boards",        1.00},
-    {"boards",        1.00},
-    {"boards",        1.00},
-	{"treasurechest_blueprint",        1.00},
-    {"blueprint",        1.00},
-
-    {"minotaurhorn",1.00},
-	{"yellowstaff",        1.00},
-    {"volcanostaff",        1.00},
-    {"cutlass",       1.00}
-
-})
+local loot = {
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "boards",
+    "treasurechest_blueprint",
+    "blueprint",
+    "minotaurhorn",
+    "yellowstaff",
+    "volcanostaff",
+    "cutlass",
+}
 
 local chest_loot =
 {
@@ -146,8 +143,8 @@ local function onothercollide(inst, other, ...)
     end
 end
 
-local function oncollide(inst, other)
-
+local _oncollide
+local function oncollide(inst, other, ...)
     if not (other ~= nil and other:IsValid() and inst:IsValid())
         or inst.recentlycharged[other]
         or other:HasTag("player")
@@ -155,80 +152,80 @@ local function oncollide(inst, other)
         return
     end
     inst:DoTaskInTime(2 * FRAMES, onothercollide, other)
+    if _oncollide ~= nil then
+        _oncollide(inst, other, ...)
+    end
 end
 
 local _dospawnchest
-local function dospawnchest(inst, ...)
-    local function dospawnchest(inst, loading)
-        local chest = SpawnPrefab("minotaurchest")
-        local x, y, z = inst.Transform:GetWorldPosition()
-        chest.Transform:SetPosition(x, 0, z)
+local function dospawnchest(inst, loading, ...)
+    local chest = SpawnPrefab("minotaurchest")
+    local x, y, z = inst.Transform:GetWorldPosition()
+    chest.Transform:SetPosition(x, 0, z)
 
-        --Set up chest loot
-        chest.components.container:GiveItem(SpawnPrefab("poop"))
+    --Set up chest loot
+    chest.components.container:GiveItem(SpawnPrefab("armorruins"))
 
-        local loot_keys = {}
-        for i, _ in ipairs(chest_loot) do
-            table.insert(loot_keys, i)
-        end
-        local max_loots = math.min(#chest_loot, chest.components.container.numslots - 1)
-        loot_keys = PickSome(math.random(max_loots - 2, max_loots), loot_keys)
+    local loot_keys = {}
+    for i, _ in ipairs(chest_loot) do
+        table.insert(loot_keys, i)
+    end
+    local max_loots = math.min(#chest_loot, chest.components.container.numslots - 1)
+    loot_keys = PickSome(math.random(max_loots - 2, max_loots), loot_keys)
 
-        for _, i in ipairs(loot_keys) do
-            local loot = chest_loot[i]
-            local item = SpawnPrefab(loot.item[math.random(#loot.item)])
-            if item ~= nil then
-                if type(loot.count) == "table" and item.components.stackable ~= nil then
-                    item.components.stackable:SetStackSize(math.random(loot.count[1], loot.count[2]))
-                end
-                chest.components.container:GiveItem(item)
+    for _, i in ipairs(loot_keys) do
+        local loot = chest_loot[i]
+        local item = SpawnPrefab(loot.item[math.random(#loot.item)])
+        if item ~= nil then
+            if type(loot.count) == "table" and item.components.stackable ~= nil then
+                item.components.stackable:SetStackSize(math.random(loot.count[1], loot.count[2]))
             end
-        end
-        --
-
-        if not chest:IsAsleep() then
-            chest.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
-
-            local fx = SpawnPrefab("statue_transition_2")
-            if fx ~= nil then
-                fx.Transform:SetPosition(x, y, z)
-                fx.Transform:SetScale(1, 2, 1)
-            end
-
-            fx = SpawnPrefab("statue_transition")
-            if fx ~= nil then
-                fx.Transform:SetPosition(x, y, z)
-                fx.Transform:SetScale(1, 1.5, 1)
-            end
-        end
-
-        if inst.minotaur ~= nil and inst.minotaur:IsValid() and inst.minotaur.sg:HasStateTag("death") then
-            inst.minotaur.MiniMapEntity:SetEnabled(false)
-            inst.minotaur:RemoveComponent("maprevealable")
-        end
-
-        if not loading then
-            inst:Remove()
+            chest.components.container:GiveItem(item)
         end
     end
-    if _dospawnchest then
-        _dospawnchest(inst, ...)
+
+    if not chest:IsAsleep() then
+        chest.SoundEmitter:PlaySound("dontstarve/common/ghost_spawn")
+
+        local fx = SpawnPrefab("statue_transition_2")
+        if fx ~= nil then
+            fx.Transform:SetPosition(x, y, z)
+            fx.Transform:SetScale(1, 2, 1)
+        end
+
+        fx = SpawnPrefab("statue_transition")
+        if fx ~= nil then
+            fx.Transform:SetPosition(x, y, z)
+            fx.Transform:SetScale(1, 1.5, 1)
+        end
+    end
+
+    if inst.minotaur ~= nil and inst.minotaur:IsValid() and inst.minotaur.sg:HasStateTag("death") then
+        inst.minotaur.MiniMapEntity:SetEnabled(false)
+        inst.minotaur:RemoveComponent("maprevealable")
+    end
+
+    if not loading then
+        inst:Remove()
+    end
+    if _dospawnchest ~= nil then
+        _dospawnchest(inst, loading, ...)
     end
 end
 
 local function postinit(inst)
 
-    if not TheWorld.ismastersim then return end
+    if not TheWorld.ismastersim then return inst end
 
     inst.Physics:SetCollisionCallback(oncollide)
 
-    if inst.components.combat then
+    if inst.components.combat ~= nil then
         inst.components.combat.playerdamagepercent = .5
         inst.components.combat:SetAreaDamage(4.3, 0.8)
     end
 
     if inst.components.lootdropper then
-        inst.components.lootdropper:SetChanceLootTable('minotaur')
+        inst.components.lootdropper:SetLoot(loot)
     end
 
 end

@@ -1,10 +1,9 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-local _RetargetFn
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","lavae","dragonfly" }
-local function RetargetFn(inst, ...)
+local function NewRetargetFn(inst, ...)
     local range = inst:GetPhysicsRadius(0) + 16
     return FindEntity(
             inst,
@@ -17,7 +16,7 @@ local function RetargetFn(inst, ...)
             end,
             RETARGET_MUST_TAGS,
             RETARGET_CANT_TAGS
-        )--, _RetargetFn(inst, ...)
+        )
 end
 
 local function OnAttacked(inst, data)
@@ -29,14 +28,14 @@ end
 
 local function postinit(inst)
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
     if inst.components.combat then
-        inst.components.combat:SetRetargetFunction(0.03, RetargetFn)
+        inst.components.combat:SetRetargetFunction(0.03, NewRetargetFn)
     end
 
     inst:ListenForEvent("attacked", OnAttacked)
-
+    end
 end
 
 AddPrefabPostInit("lavae", postinit)

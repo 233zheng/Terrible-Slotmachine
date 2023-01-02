@@ -254,7 +254,7 @@ local states=
             if equip then
                 if equip.prefab == "torch" then
                     inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_firestaff",nil,.5)
-                elseif equip.prefab == "halberd" then
+                elseif equip.prefab == "nightsword" then
                     inst.SoundEmitter:PlaySound("dontstarve_DLC003/common/items/weapon/halberd")
                 end
             end

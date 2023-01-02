@@ -15,7 +15,7 @@ local assets=
 local prefabs =
 {
     "drumstick",
-    "feather_thunder",
+    -- "feather_thunder",
     "thunderbird_fx",
 }
 
@@ -23,7 +23,7 @@ local loot =
 {
     "drumstick",
     "drumstick",
-    "feather_thunder"
+    -- "feather_thunder"
 }
 
 local function DoLightning(inst, target)

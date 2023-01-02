@@ -1,4 +1,5 @@
 local AddPrefabPostInit = AddPrefabPostInit
+local COLLISION = GLOBAL.COLLISION
 GLOBAL.setfenv(1, GLOBAL)
 
 local function posinit(inst)

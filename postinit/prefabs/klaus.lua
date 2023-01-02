@@ -37,50 +37,6 @@ local function SetStatScale(inst, scale, ...)
     end
 end
 
-local function SetPhysicalScale(inst, scale)
-    local xformscale = 1.2 * scale
-    inst.Transform:SetScale(xformscale, xformscale, xformscale)
-    inst.DynamicShadow:SetSize(3.5 * scale, 1.5 * scale)
-    if scale > 1 then
-        inst.Physics:SetMass(1000 * scale)
-        inst.Physics:SetCapsule(1.2 * scale, 1)
-    end
-end
-
-local function AnnounceWarning(inst, player, strid)
-    if player:IsValid() and player.entity:IsVisible() and
-        not (player.components.health ~= nil and player.components.health:IsDead()) and
-        not player:HasTag("playerghost") and
-        player:IsNear(inst, 15) and
-        not inst.components.health:IsDead() and
-        player.components.talker ~= nil then
-        player.components.talker:Say(GetString(player, strid))
-    end
-end
-
-local function PushWarning(inst, strid)
-    for k, v in pairs(inst.recentattackers) do
-        if k:IsValid() then
-            inst:DoTaskInTime(math.random(), AnnounceWarning, k, strid)
-        end
-    end
-end
-
-local function Enrage(inst, warning)
-    if not inst.enraged then
-        inst.enraged = true
-        inst.nohelpers = nil --redundant when enraged
-        inst.Physics:Stop()
-        inst.Physics:Teleport(inst.Transform:GetWorldPosition())
-        SetPhysicalScale(inst, TUNING.KLAUS_ENRAGE_SCALE)
-        SetStatScale(inst, TUNING.KLAUS_ENRAGE_SCALE)
-        inst.components.sanityaura.aura = inst:IsUnchained() and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
-        if warning then
-            PushWarning(inst, "ANNOUNCE_KLAUS_ENRAGE")
-        end
-    end
-end
-
 local _SpawnDeer
 local function SpawnDeer(inst, ...)
     if _SpawnDeer ~= nil then
@@ -97,7 +53,7 @@ local function postinit(inst)
         inst.hasspawned = nil
     end
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
     SetStatScale(inst, 1)
 
@@ -107,8 +63,7 @@ local function postinit(inst)
         inst.components.lootdropper:SetLoot(loot)
     end
 
-    inst.Enrage = Enrage
-
+    end
 end
 
 AddPrefabPostInit("klaus", postinit)

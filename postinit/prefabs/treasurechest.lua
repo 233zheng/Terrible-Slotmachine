@@ -30,7 +30,6 @@ local t = {
     "pandoraschest",
     "minotaurchest",
     "terrariumchest",
-	-- "sunkenchest",
 }
 
 for k, v in ipairs(t) do

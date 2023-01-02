@@ -1,7 +1,7 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
-SetSharedLootTable('beequeen',
+SetSharedLootTable('beequeen2',
 {
     {'jellybean',      1.00},
     {'jellybean',      1.00},
@@ -26,6 +26,8 @@ SetSharedLootTable('beequeen',
 	{'goldnugget', 1.00},
 	{'goldnugget', 1.00},
 })
+
+local MAX_RECENT_HONEY = 4
 
 local function PickHoney(inst)
     local rand = table.remove(inst.availablehoney, math.random(#inst.availablehoney))
@@ -103,11 +105,12 @@ local function StartHoney(inst)
     end
 end
 
-local _RetargetFn
+-- local _RetargetFn
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","bee","beeguard" }
-local function RetargetFn(inst, ...)
+local function NewRetargetFn(inst, ...)
     local range = inst:GetPhysicsRadius(0) + 16
+    print("使用新的RetargetFn")
     return FindEntity(
             inst,
             16,
@@ -129,9 +132,10 @@ local function OnAttacked(inst, data, ...)
         inst.components.combat:SetTarget(data.attacker)
         inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
     end
-    if _OnAttacked ~= nil then
-        _OnAttacked(inst, data, ...)
-    end
+    -- if _OnAttacked ~= nil then
+        -- _OnAttacked(inst, data, ...)
+        print("使用_OnAttacked")
+    -- end
 end
 
 local _OnAttackOther
@@ -141,9 +145,10 @@ local function OnAttackOther(inst, data, ...)
         fx.Transform:SetPosition(data.target.Transform:GetWorldPosition())
         fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
     end
-    if _OnAttackOther ~= nil then
-        _OnAttackOther(inst, data, ...)
-    end
+    -- if _OnAttackOther ~= nil then
+        -- _OnAttackOther(inst, data, ...)
+        print("使用__OnAttackOther")
+    -- end
 end
 
 local _OnMissOther
@@ -153,9 +158,10 @@ local function OnMissOther(inst, ...)
     local fx = SpawnPrefab("honey_trail")
     fx.Transform:SetPosition(x + TUNING.BEEQUEEN_ATTACK_RANGE * math.cos(angle), 0, z + TUNING.BEEQUEEN_ATTACK_RANGE * math.sin(angle))
     fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
-    if _OnMissOther ~= nil then
-        _OnMissOther(inst, ...)
-    end
+    -- if _OnMissOther ~= nil then
+        -- _OnMissOther(inst, ...)
+        print("使用_OnMissOther")
+    -- end
 end
 
 --------------------------------------------------------------------------
@@ -166,21 +172,25 @@ local function postinit(inst)
 
     if not TheWorld.ismastersim then return end
 
-	inst:RemoveComponent("stuckdetection")
+    -- if inst.components.stuckdetection then
+    --     inst:RemoveComponent("stuckdetection")
+    -- end
 
-    if inst.components.lootdropper then
-        inst.components.lootdropper:SetChanceLootTable('beequeen')
+    if inst.components.lootdropper ~=nil then
+        inst.components.lootdropper:SetChanceLootTable('beequeen2')
     end
 
-    if inst.components.combat then
-        inst.components.combat:SetRetargetFunction(3, RetargetFn)
+    if inst.components.combat ~= nil then
+        inst.components.combat:SetRetargetFunction(3, NewRetargetFn)
     end
 
     inst.StartHoney = StartHoney
+    inst:StartHoney()
 
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onattackother", OnAttackOther)
     inst:ListenForEvent("onmissother", OnMissOther)
+
 
 end
 
