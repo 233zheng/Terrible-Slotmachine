@@ -8,20 +8,20 @@ local function postinit(inst)
         local spawnboss2 = nil
         if inst.level ~= nil then
             inst.level = inst.level + math.random()*0.4 + 0.6
-            if inst.level >= 1 and inst.level < 2 then
+            if inst.level >= 100 and inst.level < 101 then
                 spawnboss = SpawnPrefab("dragonfly")
-            elseif inst.level >= 2 and inst.level < 3 then
+            elseif inst.level >= 200 and inst.level < 201 then
                 spawnboss = SpawnPrefab("beequeen")
-            elseif inst.level >= 3 and inst.level < 4 then
+            elseif inst.level >= 300 and inst.level < 301 then
                 spawnboss = SpawnPrefab("klaus")
-            elseif inst.level >= 3 and inst.level < 5 then
+            elseif inst.level >= 400 and inst.level < 401 then
                 spawnboss = SpawnPrefab("toadstool")
-            elseif inst.level >= 4 and inst.level < 6 then
+            elseif inst.level >= 500 and inst.level < 501 then
                 spawnboss = SpawnPrefab("shadowchesses")
-            elseif inst.level >= 4 and inst.level < 7 then
+            elseif inst.level >= 600 and inst.level < 601 then
                 spawnboss = SpawnPrefab("twinofterror1")
                 spawnboss2 = SpawnPrefab("twinofterror2")
-            elseif inst.level >= 5 and inst.level < 8 then
+            elseif inst.level >= 700 and inst.level < 701 then
                 spawnboss = SpawnPrefab("alterguardian_phase1")
             end
             if spawnboss ~= nil then
@@ -35,7 +35,7 @@ local function postinit(inst)
         else
             inst.level = 0
             print("startlevel")
-            print(level)
+            print(inst.level)
         end
         if inst.DoneSpinning and not spawnboss ~= nil then
             inst:DoneSpinning()

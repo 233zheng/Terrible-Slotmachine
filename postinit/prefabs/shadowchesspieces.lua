@@ -14,7 +14,6 @@ SetSharedLootTable("shadow_chesspiece2",
 
 local function Newretargetfn(inst)
     --retarget nearby players if current target is fleeing or not a player
-    print("正在使用Newretargetfn")
     local target = inst.components.combat.target
     if target ~= nil then
         local dist = TUNING[string.upper(inst.prefab)].RETARGET_DIST * 5

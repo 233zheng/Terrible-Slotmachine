@@ -94,7 +94,6 @@ local RETARGET_ONEOF_TAGS = { "epic", "player" }    -- The eye tries to fight pl
 -- end
 
 local function NewRetargetFn(inst)
-    print("正在使用Newretargetfn")
     local range = inst:GetPhysicsRadius(0) + 64
     return FindEntity(
             inst,

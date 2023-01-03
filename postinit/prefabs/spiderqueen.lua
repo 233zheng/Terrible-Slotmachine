@@ -19,8 +19,6 @@ local function postinit(inst)
 
     if not TheWorld.ismastersim then return end
 
-    inst:RemoveComponent("drownable")
-
     if inst.components.lootdropper then
         inst.components.lootdropper:SetLoot(loot)
     end

@@ -5,7 +5,7 @@ end
 name = en_zh("Terrible Slotmachine", "[DST]恐怖抽奖机")
 description = en_zh("Random Terrible Slotmachine!\nIt needs to be used with Island Adventures and Gem Core.", "恐怖抽奖机！\n需要与岛屿冒险一起开启")
 author = "亚丹,每年睡8760小时"
-version = "0.1.3.1"
+version = "0.1.4.3"
 forumthread = "https://steamcommunity.com/sharedfiles/filedetails/?id=2866709098"
 api_version = 10
 api_version_dst = 10

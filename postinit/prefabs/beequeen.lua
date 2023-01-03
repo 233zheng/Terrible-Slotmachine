@@ -110,7 +110,6 @@ local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","bee","beeguard" }
 local function NewRetargetFn(inst, ...)
     local range = inst:GetPhysicsRadius(0) + 16
-    print("使用新的RetargetFn")
     return FindEntity(
             inst,
             16,
@@ -134,7 +133,6 @@ local function OnAttacked(inst, data, ...)
     end
     -- if _OnAttacked ~= nil then
         -- _OnAttacked(inst, data, ...)
-        print("使用_OnAttacked")
     -- end
 end
 
@@ -160,7 +158,6 @@ local function OnMissOther(inst, ...)
     fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
     -- if _OnMissOther ~= nil then
         -- _OnMissOther(inst, ...)
-        print("使用_OnMissOther")
     -- end
 end
 
