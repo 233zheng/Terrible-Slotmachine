@@ -15,7 +15,7 @@ local function postinit(self)
     table.remove(self.bt.root.children, 1)
     table.insert(self.bt.root.children, 1, NoEscape)
 
-    local NoGetHomePos = Leash(self.inst, GetHomePos, 30, 25)
+    local NoGetHomePos = Leash(self.inst, nil, 30, 25)
 
     table.remove(self.bt.root.children, 2)
     table.insert(self.bt.root.children, 2, NoGetHomePos)
