@@ -17,12 +17,13 @@ local loot =
 
 local function postinit(inst)
 
-    if not TheWorld.ismastersim then return end
+    if TheWorld.ismastersim then
 
     if inst.components.lootdropper then
         inst.components.lootdropper:SetLoot(loot)
     end
 
+    return end
 end
 
 AddPrefabPostInit("spiderqueen", postinit)

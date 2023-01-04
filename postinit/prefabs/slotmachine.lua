@@ -253,10 +253,6 @@ local function onhauntmachine(inst, haunter)
     return false
 end
 
-local function CalcSanityAura(inst, observer)
-	return (TUNING.SANITYAURA_MED*(1+(inst.coins/100)))
-end
-
 local function OnRefuseItem(inst, item)
 	print("Slot machine refuses "..tostring(item.prefab))
 end

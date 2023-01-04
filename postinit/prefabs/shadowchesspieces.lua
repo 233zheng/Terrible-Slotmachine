@@ -53,4 +53,4 @@ local function postinit(inst)
     end
 end
 
-AddPrefabPostInit("spiderqueen", postinit)
+AddPrefabPostInit("shadowchesspieces", postinit)
