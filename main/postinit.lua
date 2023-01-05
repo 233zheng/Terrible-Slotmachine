@@ -14,7 +14,7 @@ local prefabs_post = {
     "moose",
     "mushroomsprout",
     "piratepack",
-    "rocks",
+    -- "rocks",
     "slotmachine",
     "spiderqueen",
     "stalker",

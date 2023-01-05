@@ -218,7 +218,7 @@ local function fn()
     inst.components.combat:SetAttackPeriod(TUNING.POG_ATTACK_PERIOD)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
-    inst.components.combat:SetHurtSound("pl/creatures/pog/hit")
+    inst.components.combat:SetHurtSound("dontstarve_DLC003/creatures/pog/hit")
 
 	inst:AddComponent("sleeper")
     --inst.cmponents.sleepoer:SetResistance(3)

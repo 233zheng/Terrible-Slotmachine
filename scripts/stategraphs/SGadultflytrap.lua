@@ -26,8 +26,8 @@ local states=
 
     	timeline=
 		{
-			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_out") end),
-			TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_in") end),
+			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_out") end),
+			TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_in") end),
 		},
 
  		events =
@@ -45,7 +45,7 @@ local states=
 
 		timeline=
 		{
-			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/taunt") end),
+			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/taunt") end),
 
 		},
         events =
@@ -85,13 +85,13 @@ local states=
                 end
             end),
 
-            TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/attack_pre") end),
+            TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/attack_pre") end),
 
             TimeEvent(14*FRAMES, function(inst)
                 if inst.components.combat.target then
                     inst:ForceFacePoint(inst.components.combat.target:GetPosition())
                 end
-                inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/attack")
+                inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/attack")
             end),
 
 
@@ -128,8 +128,8 @@ local states=
 
         timeline=
 		{
-			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/death_pre",nil,.5) end),
-			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/death") end),
+			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/death_pre",nil,.5) end),
+			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/death") end),
 		},
         events =
         {
@@ -145,7 +145,7 @@ local states=
 
         onenter = function(inst)
             inst.AnimState:PlayAnimation("hit")
-            inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_out")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_out")
         end,
 
         events=
@@ -160,8 +160,8 @@ local states=
 
         onenter = function(inst, target)
             inst.Physics:Stop()
-            inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_out")
-            inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/death_pre")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_out")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/death_pre")
             inst.AnimState:PlayAnimation("transform_pre")
 
         end,

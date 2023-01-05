@@ -1,4 +1,4 @@
---别看了，这个我选择摆烂
+--别看了，这个我选择摆烂:P
 require "brains/citypigbrain"
 require "brains/pigguardbrain"
 require "brains/werepigbrain"
@@ -136,27 +136,28 @@ local function sayline(inst, line, mood)
 end
 
 local function ontalk(inst, script, mood)
-    if inst:HasTag("guard") then
+    -- if inst:HasTag("guard") then
         if mood and mood == "alarmed" then
             inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/guard_alert")
         else
-            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk_gaurd","talk")
+            -- inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk_gaurd","talk")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/scream")
         end
-    else
-        if inst.female then
-            if mood and mood == "alarmed" then
-                inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/scream_female")
-            else
-               inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk_female","talk")
-            end
-        else
-            if mood and mood == "alarmed" then
-                inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/scream")
-            else
-    	       inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk","talk")
-            end
-        end
-    end
+    -- else
+    --     if inst.female then
+    --         if mood and mood == "alarmed" then
+    --             inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/scream_female")
+    --         else
+    --            inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk_female","talk")
+    --         end
+    --     else
+    --         if mood and mood == "alarmed" then
+    --             inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/scream")
+    --         else
+    -- 	       inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk","talk")
+    --         end
+    --     end
+    -- end
 end
 
 local function ontalkfinish(inst)

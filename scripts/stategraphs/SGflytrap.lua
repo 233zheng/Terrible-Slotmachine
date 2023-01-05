@@ -47,8 +47,8 @@ local states=
 
 	timeline=
 		{
-			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_out") end),
-			TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/4/breath_in") end),
+			TimeEvent(9*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_out") end),
+			TimeEvent(35*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/4/breath_in") end),
 	},
 	},
 
@@ -78,7 +78,7 @@ local states=
 				if inst.components.combat.target then
 					inst:ForceFacePoint(inst.components.combat.target:GetPosition())
 				end
-				inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack")
+				inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack")
 			end),
 
 			TimeEvent(15*FRAMES, function(inst)
@@ -103,7 +103,7 @@ local states=
 		onenter = function(inst, cb)
 			inst.Physics:Stop()
 			inst.AnimState:PlayAnimation("atk_pre")
-			inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack")
 			inst.AnimState:PushAnimation("atk", false)
 		end,
 
@@ -115,7 +115,7 @@ local states=
 		end,
 		timeline=
 		{
-			TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack") end),
+			TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/attack") end),
 			TimeEvent(18*FRAMES, function(inst) if inst:PerformBufferedAction() then inst.components.combat:SetTarget(nil) end end),
 		},
 
@@ -132,7 +132,7 @@ local states=
 		onenter = function(inst, cb)
 			inst.Physics:Stop()
 			inst.AnimState:PlayAnimation("hit")
-			inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out")
+			inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out")
 		end,
 
 		events=
@@ -152,7 +152,7 @@ local states=
 
 		timeline=
 		{
-			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/taunt") end),
+			TimeEvent(10*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/taunt") end),
 
 		},
 
@@ -175,8 +175,8 @@ local states=
 
 	timeline=
 		{
-			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death_pre",nil,.5) end),
-			TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death") end),
+			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death_pre",nil,.5) end),
+			TimeEvent(13*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death") end),
 		},
 	},
 
@@ -247,7 +247,7 @@ local states=
 
 		timeline=
 		{
-			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death_pre") end),
+			TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/death_pre") end),
 			TimeEvent(5*FRAMES,  function(inst)  inst.Transform:SetScale(inst.start_scale + (inst.inc_scale*1), inst.start_scale + (inst.inc_scale*1), inst.start_scale + (inst.inc_scale*1)) end),
 			TimeEvent(10*FRAMES, function(inst)  inst.Transform:SetScale(inst.start_scale + (inst.inc_scale*2), inst.start_scale + (inst.inc_scale*2), inst.start_scale + (inst.inc_scale*2))end),
 			TimeEvent(15*FRAMES, function(inst)  inst.Transform:SetScale(inst.start_scale + (inst.inc_scale*3), inst.start_scale + (inst.inc_scale*3), inst.start_scale + (inst.inc_scale*3))end),
@@ -270,18 +270,18 @@ local states=
 CommonStates.AddSleepStates(states,
 {
 	starttimeline ={
-		TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end),
+		TimeEvent(14*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end),
 	},
 
 
 	sleeptimeline = {
 
-		TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_in") end),
-		TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out") end),
+		TimeEvent(8*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_in") end),
+		TimeEvent(20*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out") end),
 	},
 
 	waketimeline ={
-		TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/wake") end),
+		TimeEvent(5*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/wake") end),
 	},
 })
 
@@ -291,11 +291,11 @@ CommonStates.AddRunStates(
 		runtimeline =
 		{
 			---fast
-			TimeEvent(5*FRAMES, function(inst) if inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out")  end end),
-			TimeEvent(12*FRAMES, function(inst) if inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end end),
+			TimeEvent(5*FRAMES, function(inst) if inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out")  end end),
+			TimeEvent(12*FRAMES, function(inst) if inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end end),
 			---slow
-			TimeEvent(19*FRAMES, function(inst) if not inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end end),
-			TimeEvent(7*FRAMES, function(inst)  if not inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("pl/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out") end end),
+			TimeEvent(19*FRAMES, function(inst) if not inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/step") end end),
+			TimeEvent(7*FRAMES, function(inst)  if not inst:HasTag("usefastrun") then inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/enemy/venus_flytrap/"..inst.currentTransform.."/breath_out") end end),
 		}
 	})
 CommonStates.AddFrozenStates(states)

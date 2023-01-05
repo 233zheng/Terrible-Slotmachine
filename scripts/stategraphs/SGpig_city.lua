@@ -131,7 +131,7 @@ local states=
     			inst.Physics:Stop()
                 local daytime = not TheWorld.state.isnight
                 if daytime then
-                    --inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk")
+                    inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/city_pig/conversational_talk")
                     if (inst:HasTag("emote_nohat") or math.random() < 0.3) and not inst:HasTag("emote_nocurtsy") then
                         inst.AnimState:PlayAnimation("emote_bow")
                     else
@@ -411,7 +411,10 @@ local states=
         timeline=
         {
 
-            TimeEvent(12*FRAMES, function (inst) if inst:HasTag("guard") then inst.SoundEmitter:PlaySound("dontstarve_DLC003/movement/armour/foley")end end),
+            TimeEvent(12*FRAMES, function (inst) if inst:HasTag("guard") then
+                inst.SoundEmitter:PlaySound("dontstarve_DLC003/movement/armour/foley")
+                end
+            end),
 
             TimeEvent(13*FRAMES, function (inst) if 1 == 1 then inst.sg:GoToState("idle") end end),
 

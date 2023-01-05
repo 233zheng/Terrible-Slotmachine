@@ -467,7 +467,6 @@ local function spawnbarrier(inst,pt)
             TheWorld:DoTaskInTime(math.random()*0.3, function()
                 local rock = SpawnPrefab("rock_basalt")
                 rock.AnimState:PlayAnimation("emerge")
-                inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/boss/hulk_metal_robot/rock")
                 rock.AnimState:PushAnimation("full")
 
                 rock.Transform:SetPosition(newpt.x,newpt.y,newpt.z)

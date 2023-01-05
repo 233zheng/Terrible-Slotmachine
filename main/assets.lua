@@ -19,6 +19,8 @@ PrefabFiles =
     "spider_monkey",
     "thunderbird",
     "vampirebat",
+    "rock_basalt",
+    "ancient_herald",
 
     --shadowchesses
     "shadowchesses",
