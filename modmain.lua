@@ -8,7 +8,8 @@ local mainfiles = {
     "assets",
     "util",
     "postinit",
-    "strings"
+    "strings",
+    "cmd"
 }
 
 for k, v in ipairs(mainfiles) do
