@@ -463,7 +463,7 @@ local function spawnbarrier(inst,pt)
         local newpt = pt + offset
         local tile = TheWorld.Map:GetTileAtPoint(newpt.x, newpt.y, newpt.z)
 
-        if tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID and not TheWorld.Map:IsWater(tile) then
+        if tile ~= GROUND.IMPASSABLE and tile ~= GROUND.INVALID then
             TheWorld:DoTaskInTime(math.random()*0.3, function()
                 local rock = SpawnPrefab("rock_basalt")
                 rock.AnimState:PlayAnimation("emerge")

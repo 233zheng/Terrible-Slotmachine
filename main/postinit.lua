@@ -24,6 +24,7 @@ local prefabs_post = {
     "twister",
     "warg",
     "shadowchesspieces",
+    "leif_jungle"
 }
 
 local stategraphs_post = {

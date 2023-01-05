@@ -23,13 +23,15 @@ local function CalcSanityAura(inst, observer)
     return 0
 end
 
+local notags = {"FX", "NOCLICK","INLIMBO", "swordfish"}
+local yestags = {"player"}
 local function RetargetFn(inst)
     return FindEntity(inst, TARGET_DIST, function(guy)
         return inst.components.combat:CanTarget(guy)
                and not guy:HasTag("prey")
                and not guy:HasTag("smallcreature")
                and (inst.components.knownlocations:GetLocation("targetbase") == nil or guy.components.combat.target == inst)
-    end)
+    end, yestags, notags)
 end
 
 local function KeepTargetFn(inst, target)
