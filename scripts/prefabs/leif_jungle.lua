@@ -1,13 +1,4 @@
-local IA_CONFIG = IA_CONFIG or {}
 local brain = require "brains/treeguardbrain"
-
-local assets_palm = {
-    Asset("ANIM", "anim/treeguard_walking.zip"),
-    Asset("ANIM", "anim/treeguard_actions.zip"),
-    Asset("ANIM", "anim/treeguard_attacks.zip"),
-    Asset("ANIM", "anim/treeguard_idles.zip"),
-    Asset("ANIM", "anim/treeguard_build.zip"),
-}
 
 local assets_jungle = {
     Asset("ANIM", "anim/jungletreeguard_walking.zip"),
@@ -24,10 +15,6 @@ local prefabs = {
     "livinglog",
 }
 
-local prefabs_palm = {
-    "treeguard_coconut",
-}
-
 local prefabs_jungle = {
     "bird_egg",
     "treeguard_banana",
@@ -36,22 +23,8 @@ local prefabs_jungle = {
 }
 
 for i,v in pairs(prefabs) do
-    table.insert(prefabs_palm, v)
     table.insert(prefabs_jungle, v)
 end
-
-SetSharedLootTable( 'leif_palm',
-{
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"livinglog",   1.0},
-    {"monstermeat", 1.0},
-    {"coconut",     1.0},
-    {"coconut",     1.0},
-})
 
 SetSharedLootTable( 'leif_jungle',
 {
@@ -152,16 +125,8 @@ local function OnBurnt(inst)
     end
 end
 
-local SNAKE_PROTECTION_DIST = 15 --2 for normal jungletrees, but can alert any amount of snakes not just 5
-local function OnAttacked(inst, data)
-    inst.components.combat:SetTarget(data.attacker)
-    if inst:HasTag("jungletree") then
-        inst.components.combat:ShareTarget(data.attacker, SNAKE_PROTECTION_DIST, function(dude) return dude:HasTag("snake")and not dude.components.health:IsDead() end, 5)
-    end
-end
-
 local RETARGET_MUST_TAGS = { "_combat" }
-local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO", "tree" }
+local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO", "tree", "snake"}
 local function RetargetFn(inst)
     local range = inst:GetPhysicsRadius(0) + 16
     return FindEntity(
@@ -178,12 +143,21 @@ local function RetargetFn(inst)
         )
 end
 
+local SNAKE_PROTECTION_DIST = 15 --2 for normal jungletrees, but can alert any amount of snakes not just 5
+local function OnAttacked(inst, data)
+    inst.components.combat:SetTarget(data.attacker)
+    if inst:HasTag("jungletree") then
+        inst.components.combat:ShareTarget(data.attacker, SNAKE_PROTECTION_DIST, function(dude) return dude:HasTag("snake")and not dude.components.health:IsDead() end, 5)
+    end
+end
+
 local function OnAttack(inst, data)
     local numshots = 3
     if data.target and data.target:IsValid() then
-        for i = 0, numshots - 1 do
-        local offset = Vector3(math.random(-5, 5), math.random(-5, 5), math.random(-5, 5))
-            inst.components.thrower:Throw(data.target:GetPosition() + offset)
+      for i = 0, numshots - 1 do
+        local offset = Point(math.random(-3, 3), 0, math.random(-3, 3))
+        -- local offset = Vector3(math.random(-3, 3), 0, math.random(-3, 3))
+          inst.components.thrower:Throw(data.target:GetPosition() + offset)
         end
     end
 end
@@ -233,13 +207,11 @@ local function common_fn(bank, build, tags, hitsymbol, statsdata)
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
     inst.entity:AddDynamicShadow()
-
+    inst.entity:AddNetwork()
     inst.statsdata = statsdata
 
     inst.DynamicShadow:SetSize(inst.statsdata.shadow1, inst.statsdata.shadow2 )
     inst.Transform:SetFourFaced()
-
-    inst.entity:AddNetwork()
 
     MakeCharacterPhysics(inst, 1000, inst.statsdata.capsulesize)
 
@@ -289,8 +261,8 @@ local function common_fn(bank, build, tags, hitsymbol, statsdata)
     inst.components.combat.hiteffectsymbol = hitsymbol
     inst.components.combat:SetDefaultDamage(inst.statsdata.damage)
     inst.components.combat:SetAttackPeriod(inst.statsdata.period)
-    inst.components.combat:SetRange(20, 25)
     inst.components.combat:SetRetargetFunction(3, RetargetFn)
+    inst.components.combat:SetRange(20, 25)
     inst.components.combat.playerdamagepercent = inst.statsdata.playerdamagepercent
 
     ------------------------------------------
@@ -323,24 +295,6 @@ local function common_fn(bank, build, tags, hitsymbol, statsdata)
     return inst
 end
 
-local function palm_fn()
-    local inst = common_fn("treeguard", "treeguard_build", {"palmtree"}, "marker", statsdata_palm)
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.components.locomotor.walkspeed = 1.5
-
-    inst.components.lootdropper:SetChanceLootTable('leif_palm')
-
-    inst.components.thrower.throwable_prefab = "treeguard_coconut"
-
-    inst:SetStateGraph("SGtreeguard")
-
-    return inst
-end
-
 local function jungle_fn()
     local inst = common_fn("jungletreeguard", "jungleTreeGuard_build", {"jungletree", "snakefriend"}, "body", statsdata_jungle)
 
@@ -359,12 +313,7 @@ local function jungle_fn()
 
     inst:SetStateGraph("SGtreeguard_jungle")
 
-    if not IA_CONFIG.leif_jungle then
-        --inst:DoTaskInTime(0, function(_inst) _inst.components.health:Kill() end)
-    end
-
     return inst
 end
 
-return --Prefab("leif_palm", palm_fn, assets_palm, prefabs_palm),
-    Prefab("leif_jungle", jungle_fn, assets_jungle, prefabs_jungle)
+return Prefab("leif_jungle", jungle_fn, assets_jungle, prefabs_jungle)

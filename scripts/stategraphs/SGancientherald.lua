@@ -8,19 +8,19 @@ local function stopaura(inst)
     inst.SoundEmitter:KillSound("angry")
 end
 
-local function setfires(x,y,z, rad)
-    for i, v in ipairs(TheSim:FindEntities(x, 0, z, rad, nil, { "laser", "DECOR", "INLIMBO" })) do
-        if v.components.burnable then
-            v.components.burnable:Ignite()
-        end
-    end
-end
+-- local function setfires(x,y,z, rad)
+--     for i, v in ipairs(TheSim:FindEntities(x, 0, z, rad, nil, { "laser", "DECOR", "INLIMBO" })) do
+--         if v.components.burnable then
+--             v.components.burnable:Ignite()
+--         end
+--     end
+-- end
 
 local function DoDamage(inst, rad)
     local targets = {}
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    setfires(x,y,z, rad)
+    -- setfires(x,y,z, rad)
     for i, v in ipairs(TheSim:FindEntities(x, 0, z, rad, nil, { "laser", "DECOR", "INLIMBO" })) do  --  { "_combat", "pickable", "campfire", "CHOP_workable", "HAMMER_workable", "MINE_workable", "DIG_workable" }
         if not targets[v] and v:IsValid() and not v:IsInLimbo() and not (v.components.health ~= nil and v.components.health:IsDead()) and not v:HasTag("laser_immune") then
             local vradius = 0
@@ -36,8 +36,8 @@ local function DoDamage(inst, rad)
                     --V2C: nil action for campfires
                     isworkable =
                         (   work_action == nil and v:HasTag("campfire")) or
-
-                            (   work_action == ACTIONS.CHOP or
+                            (
+                                work_action == ACTIONS.CHOP or
                                 work_action == ACTIONS.HAMMER or
                                 work_action == ACTIONS.MINE or
                                 work_action == ACTIONS.DIG
@@ -45,13 +45,13 @@ local function DoDamage(inst, rad)
                 end
                 if isworkable then
                     targets[v] = true
-                    v:DoTaskInTime(0.6, function()
-                        if v.components.workable then
-                            v.components.workable:Destroy(inst)
-                            local vx,vy,vz = v.Transform:GetWorldPosition()
-                            v:DoTaskInTime(0.3, function() setfires(vx,vy,vz,1) end)
-                        end
-                     end)
+                    -- v:DoTaskInTime(0.6, function()
+                    --     if v.components.workable then
+                    --         v.components.workable:Destroy(inst)
+                    --         local vx,vy,vz = v.Transform:GetWorldPosition()
+                    --         v:DoTaskInTime(0.3, function() setfires(vx,vy,vz,1) end)
+                    --     end
+                    --  end)
                     if v:IsValid() and v:HasTag("stump") then
                        -- v:Remove()
                     end
@@ -177,7 +177,7 @@ local states =
     State
     {
         name = "summon",
-        tags = {"busy"},
+        tags = {"busy", "summon"},
         onenter = function(inst)
             inst.Physics:Stop()
             inst.AnimState:PlayAnimation("summon")
@@ -188,10 +188,9 @@ local states =
             TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/boss/ancient_herald/summon") end),
             TimeEvent(1*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/boss/ancient_herald/summon_2d") end),
             TimeEvent(30*FRAMES, function(inst)
-                local aporkalypse = GetAporkalypse()
-                if aporkalypse then
-                    aporkalypse:HeraldSpawnAttack()
-                end
+                TheWorld:DoTaskInTime(0.6,function()
+                        inst.components.magicattack:HeraldSpawnAttack(inst)
+                end)
             end)
         },
 
@@ -224,21 +223,8 @@ CommonStates.AddCombatStates(states,
     {
         TimeEvent(0*FRAMES, function(inst) inst.SoundEmitter:PlaySound("dontstarve_DLC003/creatures/boss/ancient_herald/death") end),
         TimeEvent(32*FRAMES, function(inst)
-            local pt = Vector3(inst.Transform:GetWorldPosition())
-            inst.components.lootdropper.speed = 3
-            pt.y = 5
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("goldnugget"), pt, math.random()*360)
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("goldnugget"), pt, math.random()*360)
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("goldnugget"), pt, math.random()*360)
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("goldnugget"), pt, math.random()*360)
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("goldnugget"), pt, math.random()*360)
-
-            inst.components.lootdropper.speed = 0
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("nightmarefuel"), pt, math.random()*360)
-            inst.components.lootdropper:DropLootPrefab(SpawnPrefab("nightmarefuel"), pt, math.random()*360)
-            -- inst.components.lootdropper:DropLootPrefab(SpawnPrefab("armorvortexcloak_blueprint"), pt, math.random()*360)
-
-           -- inst.components.lootdropper:ExplodeLoot(pt, 6 + (math.random() * 2))
+            -- local pt = Vector3(inst.Transform:GetWorldPosition())
+            inst.components.lootdropper:DropLoot()
         end),
     },
 },

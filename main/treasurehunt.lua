@@ -1,4 +1,3 @@
-local IAENV = env
 GLOBAL.setfenv(1, GLOBAL)
 
 --Not directly treasure, but relevant:
@@ -8,32 +7,10 @@ SLOTMACHINE_LOOT =
 	-- It's based off altar_prototyper.lua
 	TSgoodspawns = -- Best Slot Loot List
 	{
-	--	log = 50,
-	--	twigs =50,
-	--	cutgrass = 50,
-	--	berries = 50,
-	--	limpets = 50,
-	--	meat = 50,
-	--	monstermeat = 50,
-	--	fish = 50,
-	--	meat_dried = 30,
-	--	seaweed = 50,
-	--	jellyfish = 20,
-	--	dubloon = 50,
-	--	redgem = 10,
-	--	bluegem = 10,
-	--	purplegem = 10,
-	--	goldnugget = 50,
-	--	snakeskin = 20,
-	--	spidergland = 20,
-	--	torch = 50,
-	--	coconut = 50,
-
 		slot_goldy = 1,
 		slot_10dubloons = 1,
 		slot_honeypot = 1,
 		slot_warrior1 = 1,
-		--slot_warrior2 = 0.3,
 		slot_warrior2 = 1,
 		slot_warrior3 = 1,
 		slot_warrior4 = 1,
@@ -59,8 +36,6 @@ SLOTMACHINE_LOOT =
 		staydry = 1,
 		cooloff = 0.3,
 		birders = 0.3,
-		--gears = 1,
-		--trinket = 2,
 		slot_seafoodsurprise = 1,
 		slot_fisherman = 1,
 		slot_camper = 1,
@@ -72,8 +47,11 @@ SLOTMACHINE_LOOT =
         slot_warrior5 = 1,
 		slot_glasscutter = 1,
 		slot_3dubloons = 1,
-		slot_cutlass = 1
+		slot_cutlass = 1,
+        slot_moonworker = 1,
+        slot_coffee = 1
 	},
+
 	TSokspawns = -- Food and Resources
 	{
 		slot_anotherspin = 5,
@@ -82,7 +60,6 @@ SLOTMACHINE_LOOT =
 		cutgrassbunch = 5,
 		logbunch = 5,
 		twigsbunch = 5,
-		--torch = 5,
 		slot_torched = 5,
 		slot_jelly = 5,
 		slot_handyman = 5,
@@ -109,16 +86,13 @@ SLOTMACHINE_LOOT =
         slot_health = 5,
         slot_armorwood  = 5,
         slot_footballhat = 5,
-		--wathgrithrhat = 4,
-		--whip = 2.5,
-		--cookiecutterhat = 4,
+		wathgrithrhat = 1,
         slot_thunderbird = 5,
 		slot_dungbeetle = 5,
 	},
+
 	TSbadspawns =
 	{
- 		--snake = 1,
-		--spider_hider = 1,
 		slot_spiderattack = 8,
 		slot_mosquitoattack = 4,
 		slot_snakeattack = 6,
@@ -129,8 +103,6 @@ SLOTMACHINE_LOOT =
         spiderden_2 = 2,
         moose = 1,
         bearger = 1,
-        --beequeen = 0.3,
-        --dragonfly = 0.3,
         slot_bishop = 2,
         slot_knight = 2,
         slot_rook = 2,
@@ -144,7 +116,6 @@ SLOTMACHINE_LOOT =
 		slot_vbat = 4,
         slot_slurper = 4,
         slot_tallbird = 5,
-        --treeguard = 2,
         leif = 2,
         slot_merm = 4,
         minotaur = 1,
@@ -156,8 +127,6 @@ SLOTMACHINE_LOOT =
         slot_leif_palm = 1.5,
 		slot_leif_jungle = 1.5,
         slot_dragoon = 4,
-        --toadstool = 0.3,
-        --klaus = 0.3,
         slot_mean_flytrap = 12,
         slot_spider_monkey = 4,
 		stalker = 1,
@@ -166,12 +135,12 @@ SLOTMACHINE_LOOT =
 		slot_pig_royalguard_rich = 1,
 		slot_pigman_royalguard =1,
         slot_pog = 1,
-		--nothing = 100,
+        slot_ox = 1,
+        ancient_herald = 1,
+        slot_antman_warrior = 1,
+        slot_antman = 1,
 	},
-	lavaespawns =
-	{
-        lavae = 1,
-	},
+
 	actions = -- actions to perform for the spawns
 	{
 		-- if there's a cnt, then it'll spawn that many
@@ -289,9 +258,14 @@ SLOTMACHINE_LOOT =
         slot_spider_monkey = { treasure = "slot_spider_monkey", },
 		slot_pig_royalguard_rich = { treasure  = "slot_pig_royalguard_rich", },
 		slot_pigman_royalguard = { treasure = "slot_pigman_royalguard", },
-
+        slot_pog = { treasure = "slot_pog" },
+        slot_moonworker = { treasure = "moonworker" },
+        slot_ancient_herald = { treasure = "slot_ancient_herald" },
+        slot_ox = { treasure = "slot_ox" },
+        slot_coffee = { treasure = "slot_coffee" }
 	}
 }
+
 OCTOPUSKING_LOOT = {
 	randomchestloot = -- These are "dubloon" substitutes for when there's not specific chestloot.
 	{
@@ -3105,7 +3079,7 @@ local internalloot =
             --knight = 1,
 		},
 	},
-            ["slot_spider_monkey"] =
+    ["slot_spider_monkey"] =
 	{
 		loot =
 		{
@@ -3114,8 +3088,27 @@ local internalloot =
             --knight = 1,
 		},
 	},
-
-
+    ["slot_ancient_herald"] =
+    {
+        loot = {
+            ancient_herald = 1
+        }
+    },
+    ["slot_coffee"] = {
+        loot = {
+            coffee = 3
+        }
+    },
+    ["slot_antman_warrior"] = {
+        loot = {
+            antman_warrior = 3
+        }
+    },
+    ["slot_antman"] = {
+        loot = {
+            antman = 3
+        }
+    },
 }
 
 local newtreasures=

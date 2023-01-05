@@ -47,7 +47,7 @@ local prefabs =
     "monstermeat",
 --    "pigcrownhat",
 --    "pig_scepter",
-    "pigman_shopkeeper_desk",
+    -- "pigman_shopkeeper_desk",
 }
 
 local MAX_TARGET_SHARES = 5
@@ -93,24 +93,24 @@ end ]]
     end
 end ]]
 
-local function spawndesk(inst, spawndesk)
-    if spawndesk then
-        local desklocation =  Vector3(inst.Transform:GetWorldPosition())
-        if inst.desklocation then
-            desklocation = inst.desklocation
-        end
-        inst.desk = SpawnPrefab("pigman_shopkeeper_desk")
-        inst.desk.Transform:SetPosition(desklocation.x,desklocation.y,desklocation.z)
-        inst:AddComponent("homeseeker")
-        inst.components.homeseeker:SetHome(inst.desk)
-    else
-        inst.desklocation =   Vector3(inst.Transform:GetWorldPosition())
-        if inst.desk then
-            inst.desk:Remove()
-            inst.desk = nil
-        end
-    end
-end
+-- local function spawndesk(inst, spawndesk)
+--     if spawndesk then
+--         local desklocation =  Vector3(inst.Transform:GetWorldPosition())
+--         if inst.desklocation then
+--             desklocation = inst.desklocation
+--         end
+--         inst.desk = SpawnPrefab("pigman_shopkeeper_desk")
+--         inst.desk.Transform:SetPosition(desklocation.x,desklocation.y,desklocation.z)
+--         inst:AddComponent("homeseeker")
+--         inst.components.homeseeker:SetHome(inst.desk)
+--     else
+--         inst.desklocation =   Vector3(inst.Transform:GetWorldPosition())
+--         if inst.desk then
+--             inst.desk:Remove()
+--             inst.desk = nil
+--         end
+--     end
+-- end
 
 local function separatedesk(inst,separatedesk)
     if separatedesk  then
@@ -913,7 +913,7 @@ local function makefn(name, build, fixer, guard_pig, shopkeeper, tags, sex, econ
 --                torch.components.fueled.unlimited_fuel = true
 
 				if inst.prefab == "pigman_royalguard" then
-                local axe = SpawnPrefab("tentaclespike")
+                local axe = SpawnPrefab("nightsword")
                 inst.components.inventory:GiveItem(axe)
                 inst.components.inventory:Equip(axe)
 
@@ -922,13 +922,13 @@ local function makefn(name, build, fixer, guard_pig, shopkeeper, tags, sex, econ
                 inst.components.inventory:Equip(hat)
 
 				else
-                local axe =SpawnPrefab("tentaclespike")
+                local axe =SpawnPrefab("nightsword")
                 inst.components.inventory:GiveItem(axe)
                 inst.components.inventory:Equip(axe)
 				end
 
 
-                local armour = SpawnPrefab("armorwood")
+                local armour = SpawnPrefab("armorruins")
                 if armour then
                     inst.components.inventory:GiveItem(armour)
                     inst.components.inventory:Equip(armour)

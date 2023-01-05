@@ -14,7 +14,6 @@ local prefabs_post = {
     "moose",
     "mushroomsprout",
     "piratepack",
-    -- "rocks",
     "slotmachine",
     "spiderqueen",
     "stalker",
@@ -24,7 +23,7 @@ local prefabs_post = {
     "twister",
     "warg",
     "shadowchesspieces",
-    "leif_jungle"
+    "IA_leif"
 }
 
 local stategraphs_post = {

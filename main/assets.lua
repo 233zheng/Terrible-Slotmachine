@@ -1,9 +1,6 @@
-local STRINGS = GLOBAL.STRINGS
+
 local resolvefilepath = GLOBAL.resolvefilepath
 local TheNet = GLOBAL.TheNet
-STRINGS.RECIPE_DESC.BLUEPRINT = "Random Blueprint"
-
--- GLOBAL.setfenv(1, GLOBAL)
 
 PrefabFiles =
 {
@@ -21,7 +18,10 @@ PrefabFiles =
     "vampirebat",
     "rock_basalt",
     "ancient_herald",
-
+    "leif_jungle",
+    "TS_firerain",
+    "antman",
+    "antman_warrior",
     --shadowchesses
     "shadowchesses",
     --fx

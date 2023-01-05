@@ -31,7 +31,7 @@ local function postinit(inst)
                 end
                 print("bossspawned")
             end
-            print("level is not nil"..tostring(inst.level))
+            print("level is not nil".. tostring(inst.level))
         else
             inst.level = 0
             print("startlevel")

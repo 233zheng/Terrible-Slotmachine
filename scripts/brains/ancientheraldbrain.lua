@@ -37,7 +37,7 @@ end
 local function CanSummon(inst)
     local player =  GetClosestInstWithTag("player", inst, START_FACE_DIST)
     return not inst.components.health:IsDead() and GetTime() - inst.summon_time > SUMMON_COOLDOWN and
-           (inst.components.combat.target and inst.components.combat.target == player) and ShoudSummonEntities()
+           (inst.components.combat.target and inst.components.combat.target == player) and ShoudSummonEntities(inst)
 end
 
 local function PerformSummon(inst)

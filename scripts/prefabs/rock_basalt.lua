@@ -10,20 +10,20 @@ local prefabs =
     "flint"
 }
 
-SetSharedLootTable( 'basalt',
-{
-    {'rocks',  1.00},
-    {'rocks',  1.00},
-    {'rocks',  0.50},
-    {'flint',  1.00},
-    {'flint',  0.30},
-})
+-- SetSharedLootTable( 'basalt',
+-- {
+--     {'rocks',  1.00},
+--     {'rocks',  1.00},
+--     {'rocks',  0.50},
+--     {'flint',  1.00},
+--     {'flint',  0.30},
+-- })
 
 local function OnWork(inst, worker, workleft)
     if workleft <= 0 then
         local pt = inst:GetPosition()
         SpawnPrefab("rock_break_fx").Transform:SetPosition(pt:Get())
-        inst.components.lootdropper:DropLoot(pt)
+        -- inst.components.lootdropper:DropLoot(pt)
 
         if inst.showCloudFXwhenRemoved then
             local fx = SpawnPrefab("collapse_small")
@@ -56,13 +56,18 @@ local function baserock_fn()
 
     inst:AddTag("boulder")
 
+	inst.AnimState:SetBank("rock_basalt")
+	inst.AnimState:SetBuild("rock_basalt")
+	inst.AnimState:PlayAnimation("full")
+
     inst.entity:SetPristine()
 
     if not TheWorld.ismastersim then
         return inst
     end
 
-    inst:AddComponent("lootdropper")
+    -- inst:AddComponent("lootdropper")
+	-- inst.components.lootdropper:SetChanceLootTable('basalt')
 
     inst:AddComponent("workable")
     inst.components.workable:SetWorkAction(ACTIONS.MINE)
@@ -81,15 +86,4 @@ local function baserock_fn()
     return inst
 end
 
-local function basalt_fn()
-	local inst = baserock_fn()
-	inst.AnimState:SetBank("rock_basalt")
-	inst.AnimState:SetBuild("rock_basalt")
-	inst.AnimState:PlayAnimation("full")
-
-	inst.components.lootdropper:SetChanceLootTable('basalt')
-
-	return inst
-end
-
-return Prefab("rock_basalt", basalt_fn, basalt_assets, prefabs)
+return Prefab("rock_basalt", baserock_fn, basalt_assets, prefabs)

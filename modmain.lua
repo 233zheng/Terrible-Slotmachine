@@ -1,11 +1,11 @@
 local modimport = modimport
+local GetModConfigData = GetModConfigData
 
 local mainfiles = {
     "treasurehunt",
     "actions",
     "tstuning",
     "assets",
-    -- "ham_fx",
     "util",
     "postinit",
     "strings"

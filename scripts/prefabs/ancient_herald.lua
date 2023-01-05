@@ -1,4 +1,4 @@
-local brain = require "brains/ancientheraldbrain"
+require "brains/ancientheraldbrain"
 require "stategraphs/SGancientherald"
 
 local assets =
@@ -13,25 +13,45 @@ local prefabs =
 
 local TARGET_DIST = 30
 
+local loot = {
+    'goldnugget',
+    'goldnugget',
+    'goldnugget',
+    'goldnugget',
+    'goldnugget',
+    'nightmarefuel',
+    'nightmarefuel',
+    'armor_sanity',
+    'nightsword',
+}
+
 local function CalcSanityAura(inst, observer)
     if inst.components.combat.target then
         return -TUNING.SANITYAURA_HUGE
     else
         return -TUNING.SANITYAURA_LARGE
     end
-
     return 0
 end
 
-local notags = {"FX", "NOCLICK","INLIMBO", "swordfish"}
-local yestags = {"player"}
+local RETARGET_MUST_TAGS = { "_combat", "player"}
+local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO", "ancient_herald"}
 local function RetargetFn(inst)
-    return FindEntity(inst, TARGET_DIST, function(guy)
-        return inst.components.combat:CanTarget(guy)
-               and not guy:HasTag("prey")
-               and not guy:HasTag("smallcreature")
-               and (inst.components.knownlocations:GetLocation("targetbase") == nil or guy.components.combat.target == inst)
-    end, yestags, notags)
+    local range = inst:GetPhysicsRadius(0) + 16
+    return FindEntity(
+            inst,
+            16,
+            function(guy)
+                return inst.components.combat:CanTarget(guy)
+                    and not guy:HasTag("prey")
+                    and not guy:HasTag("smallcreature")
+                    and (guy.components.combat:TargetIs(inst) or
+                            guy:IsNear(inst, range)
+                        )
+            end,
+            RETARGET_MUST_TAGS,
+            RETARGET_CANT_TAGS
+        )
 end
 
 local function KeepTargetFn(inst, target)
@@ -56,41 +76,12 @@ local function oncollide(inst, other)
     end)
 end
 
-local loot = {}
-
-SetSharedLootTable( 'ancientherald',
-{
-    {'goldnugget',            1.00},
-    {'goldnugget',            1.00},
-    {'goldnugget',            1.00},
-    {'goldnugget',            1.00},
-    {'goldnugget',            1.00},
-    {'nightmarefuel',              1.00},
-    {'nightmarefuel',              1.00},
-    {'nightmarefuel',              0.33},
-})
-
-local function onsave(inst, data)
-    if inst:HasTag("aporkalypse_cleanup")then
-        data.aporkalypse_cleanup = true
-    end
-end
-
-local function onload(inst, data)
-    if data then
-        if data.aporkalypse_cleanup then
-            inst:AddTag("aporkalypse_cleanup")
-        end
-    end
-end
-
-local function fn(Sim)
+local function fn()
 
     local inst = CreateEntity()
     inst.entity:AddTransform()
     inst.entity:AddAnimState()
     inst.entity:AddSoundEmitter()
-    inst.entity:AddDynamicShadow()
     inst.entity:AddNetwork()
 
     local s  = 1.25
@@ -107,7 +98,7 @@ local function fn(Sim)
     inst:AddTag("scarytoprey")
     inst:AddTag("largecreature")
     inst:AddTag("laser_immune")
-    inst:AddTag("notarget")
+    -- inst:AddTag("notarget")
     inst:AddTag("ancient_herald")
 
     inst.AnimState:SetBank("ancient_spirit")
@@ -121,6 +112,7 @@ local function fn(Sim)
 	end
 
     inst:AddComponent("inspectable")
+    inst:AddComponent("magicattack")
 
     inst:AddComponent("locomotor")
     inst.components.locomotor.walkspeed = TUNING.GHOST_SPEED
@@ -131,17 +123,19 @@ local function fn(Sim)
     inst.components.sanityaura.aurafn = CalcSanityAura
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.DEERCLOPS_HEALTH)
+    inst.components.health:SetMaxHealth(TUNING.ANCIENT_HERALD_HEALTH)
     inst.components.health.destroytime = 3
 
     inst:AddComponent("combat")
     inst.components.combat:SetDefaultDamage(TUNING.ANCIENT_HERALD_DAMAGE)
+    inst.components.combat:SetAttackPeriod(2)
+    inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
+    inst.components.combat:SetRetargetFunction(3, RetargetFn)
 
     inst:AddComponent("lootdropper")
-    -- inst.components.lootdropper:AddExternalLoot("ancient_remnant")
-    -- inst.components.lootdropper:AddExternalLoot("nightmarefuel")
-    inst.components.lootdropper:SetChanceLootTable('ancientherald')
+    inst.components.lootdropper:SetLoot(loot)
 
+    local brain = require "brains/ancientheraldbrain"
     inst:SetStateGraph("SGancientherald")
     inst:SetBrain(brain)
 

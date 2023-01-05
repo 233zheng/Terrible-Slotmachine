@@ -844,7 +844,7 @@ local states=
                 ShakeAllCameras( CAMERASHAKE.FULL, 0.7, 0.02, 2,inst, 40)
                 inst.components.groundpounder:GroundPound()
                 local pt = Vector3(inst.Transform:GetWorldPosition())
-                GetWorld():DoTaskInTime(0.6,function() inst.spawnbarrier(inst,pt) end)
+                TheWorld:DoTaskInTime(0.6,function() inst.spawnbarrier(inst,pt) end)
                 --local fx = SpawnPrefab("metal_hulk_ring_fx")
                 --fx.Transform:SetPosition(pt.x,pt.y,pt.z)
                 --fx.AnimState:SetOrientation( ANIM_ORIENTATION.OnGround )

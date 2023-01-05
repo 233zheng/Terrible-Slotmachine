@@ -121,32 +121,23 @@ local function NewRetargetFn(inst, ...)
             end,
             RETARGET_MUST_TAGS,
             RETARGET_CANT_TAGS
-        )--, _RetargetFn(inst, ...)
+        )
 end
 
-local _OnAttacked
 local function OnAttacked(inst, data, ...)
     if data.attacker ~= nil then
         local target = inst.components.combat.target
         inst.components.combat:SetTarget(data.attacker)
         inst.components.commander:ShareTargetToAllSoldiers(data.attacker)
     end
-    -- if _OnAttacked ~= nil then
-        -- _OnAttacked(inst, data, ...)
-    -- end
 end
 
-local _OnAttackOther
 local function OnAttackOther(inst, data, ...)
     if data.target ~= nil then
         local fx = SpawnPrefab("honey_trail")
         fx.Transform:SetPosition(data.target.Transform:GetWorldPosition())
         fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
     end
-    -- if _OnAttackOther ~= nil then
-        -- _OnAttackOther(inst, data, ...)
-        print("使用__OnAttackOther")
-    -- end
 end
 
 local _OnMissOther
@@ -156,9 +147,6 @@ local function OnMissOther(inst, ...)
     local fx = SpawnPrefab("honey_trail")
     fx.Transform:SetPosition(x + TUNING.BEEQUEEN_ATTACK_RANGE * math.cos(angle), 0, z + TUNING.BEEQUEEN_ATTACK_RANGE * math.sin(angle))
     fx:SetVariation(PickHoney(inst), GetRandomMinMax(1, 1.3), 4 + math.random() * .5)
-    -- if _OnMissOther ~= nil then
-        -- _OnMissOther(inst, ...)
-    -- end
 end
 
 --------------------------------------------------------------------------
@@ -168,10 +156,6 @@ local function postinit(inst)
     inst:RemoveTag("beequeen")
 
     if not TheWorld.ismastersim then return end
-
-    -- if inst.components.stuckdetection then
-    --     inst:RemoveComponent("stuckdetection")
-    -- end
 
     if inst.components.lootdropper ~=nil then
         inst.components.lootdropper:SetChanceLootTable('beequeen2')
@@ -187,7 +171,6 @@ local function postinit(inst)
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("onattackother", OnAttackOther)
     inst:ListenForEvent("onmissother", OnMissOther)
-
 
 end
 
