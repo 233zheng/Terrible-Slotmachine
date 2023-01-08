@@ -58,9 +58,17 @@ SetSharedLootTable('ancient_hulk',
     -- {'iron',            0.25},
 
 
-    {'gears',           1.0},
-    {'gears',           1.0},
+    {'goldnugget',           1.0},
+    {'goldnugget',           1.0},
+    {'goldnugget',           1.0},
+    {'goldnugget',           1.0},
+    {'ruins_bat',           1.0},
+    {'ruinshat',           1.0},
+    {'armorruins',           1.0},
+    {'armordragonfly',           1.0},
     {'gears',           0.75},
+    {'gears',           0.30},
+    {'gears',           0.30},
     {'gears',           0.30},
 })
 
