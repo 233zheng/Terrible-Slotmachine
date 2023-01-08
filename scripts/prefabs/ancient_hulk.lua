@@ -371,14 +371,14 @@ local function OnAttacked(inst, data)
 end
 
 local function OnCollide(inst, other)
-    local v = other
+    print(other)
 
     local isworkable = false
-    if v.components.workable ~= nil then
-        local work_action = v.components.workable:GetWorkAction()
+    if other.components.workable ~= nil then
+        local work_action = other.components.workable:GetWorkAction()
         --V2C: nil action for campfires
         isworkable =
-            (   work_action == nil and v:HasTag("campfire")    ) or
+            (   work_action == nil and other:HasTag("campfire")    ) or
 
                 (   work_action == ACTIONS.CHOP or
                     work_action == ACTIONS.HAMMER or
@@ -387,19 +387,19 @@ local function OnCollide(inst, other)
                 )
     end
     if isworkable then
-        v:DoTaskInTime(0.6, function()
-            if v.components.workable then
-                v.components.workable:Destroy(inst)
+        other:DoTaskInTime(0.6, function()
+            if other.components.workable then
+                other.components.workable:Destroy(inst)
             end
          end)
-    elseif v.components.pickable ~= nil
-        and v.components.pickable:CanBePicked()
-        and not v:HasTag("intense") then
+    elseif other.components.pickable ~= nil
+        and other.components.pickable:CanBePicked()
+        and not other:HasTag("intense") then
 
-        local num = v.components.pickable.numtoharvest or 1
-        local product = v.components.pickable.product
-        local x1, y1, z1 = v.Transform:GetWorldPosition()
-        v.components.pickable:Pick(inst) -- only calling this to trigger callbacks on the object
+        local num = other.components.pickable.numtoharvest or 1
+        local product = other.components.pickable.product
+        local x1, y1, z1 = other.Transform:GetWorldPosition()
+        other.components.pickable:Pick(inst) -- only calling this to trigger callbacks on the object
         if product ~= nil and num > 0 then
             for i = 1, num do
                 local loot = SpawnPrefab(product)
@@ -570,8 +570,6 @@ local function fn(Sim)
 
 	MakeCharacterPhysics(inst, 1000, 1.5)
 
-    inst.Physics:SetCollisionCallback(OnCollide)
-
     inst.AnimState:SetBank("metal_hulk")
     inst.AnimState:SetBuild("metal_hulk_build")
     inst.AnimState:PlayAnimation("idle", true)
@@ -600,6 +598,8 @@ local function fn(Sim)
 	if not TheWorld.ismastersim then
 		return inst
 	end
+
+    inst.Physics:SetCollisionCallback(OnCollide)
 
     inst:AddComponent("inspectable")
     inst:AddComponent("fader")
