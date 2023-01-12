@@ -36,10 +36,24 @@ configuration_options  = {
         },},
     default = 1
     },
+
+    {
+        name = "recipespostinit",
+        label = "部分制作材料修改",
+        hover = "大部分都是角色物品",
+        options =
+        {{description = "开启",hover = "开启",data = true
+        },
+        {description = "关闭",hover = "关闭",data = false
+        },}
+        ,
+    default = false
+    },
+
     {
         name = "ANCIENT_HULKHEALTH",
-        label = "远古巨人血量",
-        hover = "远古巨人血量",
+        label = "远古巨人的血量",
+        hover = "远古巨人的血量",
         options = {
         {description = "默认的血量",hover = "9000血",data = 9000
         },
@@ -49,6 +63,7 @@ configuration_options  = {
         }},
     default = 9000
     },
+
     {
         name = "DRAGONFLY_HEALTH",
         label = "龙蝇的血量",

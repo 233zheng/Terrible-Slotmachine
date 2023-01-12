@@ -39,10 +39,6 @@ local brains_post = {
     "toadstoolbrain",
 }
 
-local scriptspostint = {
-    "recipespostinit"
-}
-
 for _, file_name in pairs(components_post) do
     modimport("postinit/components/" .. file_name)
 end
@@ -57,8 +53,4 @@ end
 
 for _, file_name in pairs(brains_post) do
     modimport("postinit/brains/" .. file_name)
-end
-
-for k, v in ipairs(scriptspostint) do
-    modimport("postinit/".. v)
 end
