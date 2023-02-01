@@ -31,7 +31,7 @@ local function postinitfn(inst)
 
     if not TheWorld.ismastersim then return end
 
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~= nil then
         inst.components.lootdropper:SetChanceLootTable('tigershark2')
     end
 

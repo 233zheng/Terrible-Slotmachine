@@ -213,9 +213,19 @@ local function dospawnchest(inst, loading, ...)
     end
 end
 
+local function OnLoadChest(inst)
+    if inst.task ~= nil then
+        inst.task:Cancel()
+        inst.task = nil
+        dospawnchest(inst, true)
+        inst.persists = false
+        inst:DoTaskInTime(0, inst.Remove)
+    end
+end
+
 local function postinit(inst)
 
-    if not TheWorld.ismastersim then return inst end
+    if not TheWorld.ismastersim then return end
 
     inst.Physics:SetCollisionCallback(oncollide)
 
@@ -224,7 +234,7 @@ local function postinit(inst)
         inst.components.combat:SetAreaDamage(4.3, 0.8)
     end
 
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~=nil then
         inst.components.lootdropper:SetLoot(loot)
     end
 
@@ -232,6 +242,8 @@ end
 
 local function minotaurchestspawnerpostinit(inst)
     inst.task = inst:DoTaskInTime(3, dospawnchest)
+
+    inst.OnLoad = OnLoadChest
 end
 
 AddPrefabPostInit("minotaur", postinit)

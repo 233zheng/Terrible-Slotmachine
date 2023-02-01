@@ -1,5 +1,6 @@
 local AddCharacterRecipe = AddCharacterRecipe
 local AddRecipe2 = AddRecipe2
+local AddRecipePostInit = AddRecipePostInit
 local Ingredient = GLOBAL.Ingredient
 local TECH = GLOBAL.TECH
 GLOBAL.setfenv(1, GLOBAL)

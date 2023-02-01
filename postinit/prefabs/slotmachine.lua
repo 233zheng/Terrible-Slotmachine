@@ -134,23 +134,23 @@ local function PickHauntPrize(inst)
 	inst.prizevalue = prizevalue
 end
 
-local function PickGoldPrize(inst)
+-- local function PickGoldPrize(inst)
 
-	local prizevalue = weighted_random_choice(goldprizevalues)
-	print("slotmachine prizevalue", prizevalue)
-	if prizevalue == "ok" then
-		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSokspawns)
-	elseif prizevalue == "good" then
-		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSgoodspawns)
-	elseif prizevalue == "bad" then
-		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSbadspawns)
-	else
-		-- impossible!
-		print("impossible slot machine prizevalue!", prizevalue)
-	end
+-- 	local prizevalue = weighted_random_choice(goldprizevalues)
+-- 	print("slotmachine prizevalue", prizevalue)
+-- 	if prizevalue == "ok" then
+-- 		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSokspawns)
+-- 	elseif prizevalue == "good" then
+-- 		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSgoodspawns)
+-- 	elseif prizevalue == "bad" then
+-- 		inst.prize = weighted_random_choice(SLOTMACHINE_LOOT.TSbadspawns)
+-- 	else
+-- 		-- impossible!
+-- 		print("impossible slot machine prizevalue!", prizevalue)
+-- 	end
 
-	inst.prizevalue = prizevalue
-end
+-- 	inst.prizevalue = prizevalue
+-- end
 
 local function StartSpinning(inst)
 	inst.sg:GoToState("spinning") --"busy" statetag blocks trader component
@@ -211,7 +211,6 @@ end
     end
 end
 
-local _ShouldAcceptItem
 local function ShouldAcceptItem(inst, item, ...)
 
 	if not inst.sg.HasStateTag("busy") and (item.prefab == "dubloon" or item.prefab == "goldnugget") then
@@ -219,9 +218,6 @@ local function ShouldAcceptItem(inst, item, ...)
 	else
 		return false
 	end
-    if _ShouldAcceptItem ~= nil then
-        _ShouldAcceptItem(inst, item, ...)
-    end
 end
 
 local _OnGetItemFromPlayer
@@ -233,10 +229,6 @@ local function OnGetItemFromPlayer(inst, giver, item, ...)
 	    PickPrize(inst)
         StartSpinning(inst)
         inst.chance = 1
-    elseif item.prefab == "goldnugget" then
-        PickGoldPrize(inst)
-        StartSpinning(inst)
-        inst.chance = 3
     end
     if _OnGetItemFromPlayer ~= nil then
         _OnGetItemFromPlayer(inst, giver, item, ...)
@@ -261,7 +253,6 @@ local function CalcSanityAura(inst, observer)
 	return (TUNING.SANITYAURA_MED*(1+(inst.coins/100)))
 end
 
-local _OnLoad
 local function OnLoad(inst,data, ...)
 	if not data then
 		return
@@ -274,20 +265,13 @@ local function OnLoad(inst,data, ...)
 	if inst.prize ~= nil then
 		StartSpinning(inst)
 	end
-    if _OnLoad ~= nil then
-        _OnLoad(inst,data, ...)
-    end
 end
 
-local _OnSave
 local function OnSave(inst,data, ...)
 	data.coins = inst.coins
 	data.prize = inst.prize
 	data.prizevalue = inst.prizevalue
     data.level = inst.level
-    if _OnSave ~= nil then
-        _OnSave(inst,data, ...)
-    end
 end
 
 local function postinit(inst)
@@ -299,22 +283,31 @@ local function postinit(inst)
     inst.level = 0
 	inst.DoneSpinning = DoneSpinning
 
-    if inst.components.sanityaura then
+    if inst.components.sanityaura ~= nil then
         inst.components.sanityaura.aurafn = CalcSanityAura
     end
 
-    if inst.components.hauntable then
+    if inst.components.hauntable ~= nil then
         inst.components.hauntable:SetOnHauntFn(onhauntmachine)
     end
 
-    if inst.components.trader then
+    if inst.components.trader ~= nil then
         inst.components.trader:SetAcceptTest(ShouldAcceptItem)
         inst.components.trader.onaccept = OnGetItemFromPlayer
         inst.components.trader.onrefuse = OnRefuseItem
     end
 
-    inst.OnSave = OnSave
-    inst.OnLoad = OnLoad
+    local oldOnSave = inst.OnSave
+    inst.OnSave = function(...)
+        oldOnSave(...)
+        OnSave(...)
+    end
+
+    local oldOnLoad = inst.OnLoad
+    inst.OnLoad = function(...)
+        oldOnLoad(...)
+        OnLoad(...)
+    end
 
 end
 

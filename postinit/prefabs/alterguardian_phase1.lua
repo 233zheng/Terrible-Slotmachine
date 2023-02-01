@@ -3,7 +3,15 @@ GLOBAL.setfenv(1, GLOBAL)
 
 SetSharedLootTable("alterguardian_phase1_init",
 {
-    "poop"
+    {"ruinshat", 1.00},
+    {"ruinshat",       1.00},
+    {"ruinshat",       0.33},
+    {"ruinshat",       0.33},
+
+    {'armorruins',             1.00},
+    {'armorruins',             1.00},
+    {'armorruins',             0.33},
+    {'armorruins',             0.33},
 })
 
 local _onothercollide
@@ -67,15 +75,16 @@ local function posinit(inst)
         inst._camerafocus = nil
     end
 
-    if TheWorld.ismastersim then
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~= nil then
         inst.components.lootdropper:SetChanceLootTable("alterguardian_phase1_init")
     end
 
     inst.EnableRollCollision = EnableRollCollision
 
-    end
 end
 
 AddPrefabPostInit("alterguardian_phase1", posinit)

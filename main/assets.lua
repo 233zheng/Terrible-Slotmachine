@@ -22,6 +22,7 @@ PrefabFiles =
     "TS_firerain",
     "antman",
     "antman_warrior",
+    "halberd",
     --shadowchesses
     "shadowchesses",
     --fx

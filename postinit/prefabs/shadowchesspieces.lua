@@ -3,8 +3,8 @@ GLOBAL.setfenv(1, GLOBAL)
 
 SetSharedLootTable("shadow_chesspiece2",
 {
-    { "nightmarefuel",  1.0 },
-    { "nightmarefuel",  0.5 },
+    {"nightmarefuel",  1.0 },
+    {"nightmarefuel",  0.5 },
     {"goldnugget",    1.00},
     {"goldnugget",    1.00},
     {"goldnugget",    1.00},
@@ -16,7 +16,7 @@ local function Newretargetfn(inst)
     --retarget nearby players if current target is fleeing or not a player
     local target = inst.components.combat.target
     if target ~= nil then
-        local dist = TUNING[string.upper(inst.prefab)].RETARGET_DIST * 5
+        local dist = TUNING[string.upper(inst.prefab)].RETARGET_DIST * 20
         if target:HasTag("player") and inst:IsNear(target, dist) or not inst:IsNearPlayer(dist, true) then
             return
         end
@@ -24,7 +24,7 @@ local function Newretargetfn(inst)
     end
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local players = FindPlayersInRange(x, y, z, TUNING.SHADOWCREATURE_TARGET_DIST * 5, true)
+    local players = FindPlayersInRange(x, y, z, TUNING.SHADOWCREATURE_TARGET_DIST * 20, true)
     local rangesq = math.huge
     for i, v in ipairs(players) do
         local distsq = v:GetDistanceSqToPoint(x, y, z)
@@ -40,9 +40,11 @@ local function postinit(inst)
 
 	inst.AnimState:UsePointFiltering(true)
 
-    if TheWorld.ismastersim then
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~= nil then
         inst.components.lootdropper:SetChanceLootTable("shadow_chesspiece2")
     end
 
@@ -50,7 +52,6 @@ local function postinit(inst)
         inst.components.combat:SetRetargetFunction(3, Newretargetfn)
     end
 
-    end
 end
 
 AddPrefabPostInit("shadowchesspieces", postinit)

@@ -20,15 +20,16 @@ local function chessesfn(Sim)
         knight.Transform:SetPosition((inst:GetPosition() + Vector3(5,0,0)):Get())
         rook.Transform:SetPosition((inst:GetPosition() + Vector3(-3,0,4)):Get())
         bishop.Transform:SetPosition((inst:GetPosition() + Vector3(-3,0,-4)):Get())
+
         inst:ListenForEvent("death",function(boss)
             inst.liveboss = inst.liveboss - 1
-        end,knight)
+        end, knight)
         inst:ListenForEvent("death",function(boss)
             inst.liveboss = inst.liveboss - 1
-        end,rook)
+        end, rook)
         inst:ListenForEvent("death",function(boss)
             inst.liveboss = inst.liveboss - 1
-        end,bishop)
+        end, bishop)
 
     end)
 

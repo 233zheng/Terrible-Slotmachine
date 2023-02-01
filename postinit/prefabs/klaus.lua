@@ -7,11 +7,22 @@ local loot =
     "charcoal",
 	"goldnugget",
     "klaus_sack",
+    'ruinshat',
+    'ruinshat',
 }
 
 ----------------------------------postinit function----------------------------------------------
 
-local _SetStatScale
+local function SetPhysicalScale(inst, scale)
+    local xformscale = 1.2 * scale
+    inst.Transform:SetScale(xformscale, xformscale, xformscale)
+    inst.DynamicShadow:SetSize(3.5 * scale, 1.5 * scale)
+    if scale > 1 then
+        inst.Physics:SetMass(1000 * scale)
+        inst.Physics:SetCapsule(1.2 * scale, 1)
+    end
+end
+
 local function SetStatScale(inst, scale, ...)
     inst.deer_dist = 3.5 * scale
     inst.hit_recovery = TUNING.KLAUS_HIT_RECOVERY * scale
@@ -28,19 +39,29 @@ local function SetStatScale(inst, scale, ...)
     --scale by volume yo XD
     scale = scale * scale * scale
     local health_percent = inst.components.health:GetPercent()
-    inst.components.health:SetMaxHealth(TUNING.KLAUS_HEALTH * scale)
+    inst.components.health:SetMaxHealth((TUNING.KLAUS_HEALTH * scale) / 2)
     -- inst.components.health:SetPercent(health_percent)
     -- inst.components.health:SetAbsorptionAmount(scale > 1 and 1 - 1 / scale or 0) --don't want any floating point errors!
-    inst.components.combat:SetDefaultDamage(TUNING.KLAUS_DAMAGE * scale)
-    if _SetStatScale ~= nil then
-        _SetStatScale(inst, scale, ...)
-    end
+    inst.components.combat:SetDefaultDamage(TUNING.KLAUS_DAMAGE)
 end
 
+--不生成鹿，直接返回一个空函数
 local _SpawnDeer
 local function SpawnDeer(inst, ...)
     if _SpawnDeer ~= nil then
         _SpawnDeer(inst, ...)
+    end
+end
+
+local function Enrage(inst, warning)
+    if not inst.enraged then
+        inst.enraged = true
+        inst.nohelpers = nil --redundant when enraged
+        inst.Physics:Stop()
+        inst.Physics:Teleport(inst.Transform:GetWorldPosition())
+        SetPhysicalScale(inst, 1.4)
+        SetStatScale(inst, 1.4)
+        inst.components.sanityaura.aura = inst:IsUnchained() and -TUNING.SANITYAURA_HUGE or -TUNING.SANITYAURA_LARGE
     end
 end
 
@@ -53,17 +74,22 @@ local function postinit(inst)
         inst.hasspawned = nil
     end
 
-    if TheWorld.ismastersim then
+    if not TheWorld.ismastersim then
+        return inst
+    end
 
-    SetStatScale(inst, 1)
+    SetStatScale(inst, 1.4)
+
+    inst.Enrage = function(...)
+        Enrage(...)
+    end
 
     inst.SpawnDeer = SpawnDeer
 
-    if inst.components.lootdropper then
+    if inst.components.lootdropper ~= nil then
         inst.components.lootdropper:SetLoot(loot)
     end
 
-    end
 end
 
 AddPrefabPostInit("klaus", postinit)

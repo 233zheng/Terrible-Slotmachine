@@ -7,7 +7,7 @@ local function postinit(inst)
         local spawnboss = nil
         local spawnboss2 = nil
         if inst.level ~= nil then
-            inst.level = inst.level + math.random()*0.4 + 0.6
+            inst.level = inst.level + math.random() * 0.4 + 0.6
             if inst.level >= 100 and inst.level < 101 then
                 spawnboss = SpawnPrefab("dragonfly")
             elseif inst.level >= 200 and inst.level < 201 then

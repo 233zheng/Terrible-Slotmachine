@@ -9,7 +9,6 @@ SetSharedLootTable('dragonfly2',
     {'lavae_egg',                 0.33},
     {'cutlass',      1.00},
 
-
     {'meat',             1.00},
     {'meat',             1.00},
     {'meat',             1.00},
@@ -94,7 +93,6 @@ local function OnTargetDeathTask(inst)
     end
 end
 
-local _RetargetFn
 local RETARGET_MUST_TAGS = { "_combat" }
 local RETARGET_CANT_TAGS = { "prey", "smallcreature", "INLIMBO","lavae" }
 local function NewRetargetFn(inst, ...)

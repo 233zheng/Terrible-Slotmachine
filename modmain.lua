@@ -21,7 +21,6 @@ if recipespostinit then
     modimport("postinit/recipespostinit")
 end
 
-
 modimport("scripts/ham_fx")
 
 -- 下面这个写法特别蠢,因为我懒 by:每年睡8760小时

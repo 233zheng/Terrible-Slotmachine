@@ -418,8 +418,11 @@ local function postinit(inst)
 end
 
 local function twinmanagerpostinit(inst)
-    if TheWorld.ismastersim then
 
+    if not TheWorld.ismastersim then
+        return inst
+    end
+    inst.isdying = inst.IsDying
     inst.IsDying = twinsmanager_isdying
 
     inst:DoTaskInTime(0.1,function()
@@ -433,10 +436,9 @@ local function twinmanagerpostinit(inst)
     inst:ListenForEvent("arrive", spawn_arriving_twins)
 
     inst.OnLoadPostPass = OnTwinManagerLoadPostPass
-    end
 end
 
 AddPrefabPostInit("eyeofterror", postinit)
 AddPrefabPostInit("twinofterror1", postinit)
 AddPrefabPostInit("twinofterror2", postinit)
--- AddPrefabPostInit("twinmanager", twinmanagerpostinit)
+AddPrefabPostInit("twinmanager", twinmanagerpostinit)
