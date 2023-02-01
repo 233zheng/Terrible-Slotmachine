@@ -10,19 +10,26 @@ local function postinit(inst)
             inst.level = inst.level + math.random() * 0.4 + 0.6
             if inst.level >= 100 and inst.level < 101 then
                 spawnboss = SpawnPrefab("dragonfly")
+                inst.level = 102
             elseif inst.level >= 200 and inst.level < 201 then
                 spawnboss = SpawnPrefab("beequeen")
+                inst.level = 202
             elseif inst.level >= 300 and inst.level < 301 then
                 spawnboss = SpawnPrefab("klaus")
+                inst.level = 302
             elseif inst.level >= 400 and inst.level < 401 then
                 spawnboss = SpawnPrefab("toadstool")
+                inst.level = 402
             elseif inst.level >= 500 and inst.level < 501 then
                 spawnboss = SpawnPrefab("shadowchesses")
+                inst.level = 502
             elseif inst.level >= 600 and inst.level < 601 then
                 spawnboss = SpawnPrefab("twinofterror1")
                 spawnboss2 = SpawnPrefab("twinofterror2")
+                inst.level = 602
             elseif inst.level >= 700 and inst.level < 701 then
                 spawnboss = SpawnPrefab("alterguardian_phase1")
+                inst.level = 702
             end
             if spawnboss ~= nil then
                 spawnboss.Transform:SetPosition(inst.Transform:GetWorldPosition())

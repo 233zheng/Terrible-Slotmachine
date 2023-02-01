@@ -36,6 +36,10 @@ Assets = {
     --Loading minimap
     Asset("ATLAS", "images/mean_flytrap.xml"),
     Asset("IMAGE", "images/mean_flytrap.tex"),
+
+    Asset("ATLAS", "images/halberd.xml"),
+    Asset("IMAGE", "images/halberd.tex"),
+    Asset("ATLAS_BUILD", "images/halberd.xml", 256),
 }
 
 AddMinimapAtlas("images/mean_flytrap.xml")

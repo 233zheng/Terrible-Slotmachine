@@ -47,7 +47,7 @@ configuration_options  = {
         {description = "关闭",hover = "关闭",data = false
         },}
         ,
-    default = false
+    default = true
     },
 
     {
@@ -55,6 +55,8 @@ configuration_options  = {
         label = "远古巨人的血量",
         hover = "远古巨人的血量",
         options = {
+        {description = "更多的血量",hover = "14000血",data = 14000
+        },
         {description = "默认的血量",hover = "9000血",data = 9000
         },
         {description = "较少的血量",hover = "6000血",data = 6000
@@ -69,6 +71,8 @@ configuration_options  = {
         label = "龙蝇的血量",
         hover = "龙蝇的血量",
         options = {
+        {description = "更多的血量",hover = "37500血",data = 37500
+        },
         {description = "默认的血量",hover = "27500血",data = 27500
         },
         {description = "较少的血量",hover = "6000血",data = 15000

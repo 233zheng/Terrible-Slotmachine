@@ -1,17 +1,6 @@
 local AddPrefabPostInit = AddPrefabPostInit
 GLOBAL.setfenv(1, GLOBAL)
 
--- {"eyemaskhat",                      1.00},
--- {"milkywhites",                     1.00},
--- {"milkywhites",                     1.00},
--- {"milkywhites",                     1.00},
--- {"milkywhites",                     0.50},
--- {"milkywhites",                     0.50},
--- {"monstermeat",                     1.00},
--- {"monstermeat",                     1.00},
--- {"monstermeat",                     0.50},
--- {"monstermeat",                     0.50},
-
 local eyeofterrorloot  = {
     "eyemaskhat",
     "milkywhites",
@@ -337,7 +326,6 @@ local function spawn_arriving_twins(inst, targeted_player)
     inst._hardmode_days_reset_counter = TUNING.TWINS_RESET_DAY_COUNT
 end
 
-local _twinsmanager_isdying
 local function twinsmanager_isdying(inst, ...)
     local et = inst.components.entitytracker
     local t1 = et:GetEntity("twin1")
@@ -351,9 +339,6 @@ local function twinsmanager_isdying(inst, ...)
         return t1.components.health:IsDead()
     else
         return false
-    end
-    if _twinsmanager_isdying ~= nil then
-        _twinsmanager_isdying(inst, ...)
     end
 end
 
@@ -422,20 +407,25 @@ local function twinmanagerpostinit(inst)
     if not TheWorld.ismastersim then
         return inst
     end
-    inst.isdying = inst.IsDying
-    inst.IsDying = twinsmanager_isdying
+
+    inst.IsDying = function(...)
+        twinsmanager_isdying(...)
+    end
 
     inst:DoTaskInTime(0.1,function()
-        local ply
+        local player
         for i, v in ipairs(AllPlayers) do
-            ply = v
+            player = v
         end
-        inst:PushEvent("arrive",ply)
+        inst:PushEvent("arrive", player)
     end)
 
     inst:ListenForEvent("arrive", spawn_arriving_twins)
 
-    inst.OnLoadPostPass = OnTwinManagerLoadPostPass
+    inst.OnLoadPostPass = function(...)
+        OnTwinManagerLoadPostPass(...)
+    end
+
 end
 
 AddPrefabPostInit("eyeofterror", postinit)

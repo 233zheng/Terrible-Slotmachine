@@ -89,6 +89,10 @@ SLOTMACHINE_LOOT =
 		wathgrithrhat = 1,
         slot_thunderbird = 5,
 		slot_dungbeetle = 5,
+        slot_pig_royalguard_rich = 1,
+		slot_pigman_royalguard =1,
+        slot_pog = 1,
+        slot_ox = 1,
 	},
 
 	TSbadspawns =
@@ -132,10 +136,6 @@ SLOTMACHINE_LOOT =
 		stalker = 1,
 		eyeofterror = 1,
 		slot_flup = 1,
-		slot_pig_royalguard_rich = 1,
-		slot_pigman_royalguard =1,
-        slot_pog = 1,
-        slot_ox = 1,
         ancient_herald = 1,
         slot_antman_warrior = 1,
         slot_antman = 1,

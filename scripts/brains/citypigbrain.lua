@@ -56,7 +56,6 @@ local function KeepTraderFn(inst, target)
     return inst.components.trader:IsTryingToTradeWithMe(target)
 end
 
-
 local function KeepChoppingAction(inst)
     local keep_chop = inst.components.follower.leader and inst.components.follower.leader:GetDistanceSqToInst(inst) <= KEEP_CHOPPING_DIST*KEEP_CHOPPING_DIST
     local target = FindEntity(inst, SEE_TREE_DIST/3, function(item)
@@ -76,7 +75,6 @@ local function StartChoppingCondition(inst)
 
     return (start_chop or target ~= nil)
 end
-
 
 local function FindTreeToChopAction(inst)
     local target = FindEntity(inst, SEE_TREE_DIST, function(item) return item.components.workable and item.components.workable.action == ACTIONS.CHOP end)
@@ -103,7 +101,6 @@ local function HasValidHome(inst)
        inst.components.homeseeker.home:IsValid()
 end
 
-
 local function GuardGoHomeAction(inst)
     local homePos = inst.components.knownlocations:GetLocation("home")
     if homePos and
@@ -127,16 +124,9 @@ local function GetNoLeaderHomePos(inst)
     return GetHomePos(inst)
 end
 
-function getfacespeech(inst)
-    local speech = getSpeechType(inst, STRINGS.CITY_PIG_TALK_LOOKATWILSON)
-    return speech
-end
-
-
 local RoyalPigGuardBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
-
 
 local function shouldPanic(inst)
 

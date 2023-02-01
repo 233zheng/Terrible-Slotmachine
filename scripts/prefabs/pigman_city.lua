@@ -141,7 +141,7 @@ local function NormalRetargetFn(inst)
 			inst,
 			TUNING.PIG_TARGET_DIST,
 			function(guy)
-				return (guy.LightWatcher == nil or guy.LightWatcher:IsInLight()) and inst.components.combat:CanTarget(guy)
+				return inst.components.combat:CanTarget(guy)
 			end,
 			{"monster", "_combat", "epic"}, -- see entityreplica.lua
 			exclude_tags
@@ -202,11 +202,6 @@ local function SetNormalPig(inst, brain_id)
 
 	inst.components.trader:Enable()
 	inst.components.talker:StopIgnoringAll()
-
-    local brain = require "brains/citypigbrain"
-    inst:SetBrain(brain)
-
-    inst:SetStateGraph("SGpig_city")
 
 end
 
@@ -493,6 +488,11 @@ local function make_pig_guard()
     inst:WatchWorldState("startday", startday)
     inst:WatchWorldState("isnight", isnight)
 
+    local brain = require "brains/citypigbrain"
+    inst:SetBrain(brain)
+
+    inst:SetStateGraph("SGpig_city")
+
     return inst
 end
 
@@ -503,9 +503,8 @@ local function makepigman(name, build, tags)
     return Prefab(name, makefn(name, build, tags), assets, prefabs )
 end
 
-return  makepigman("pigman_royalguard", "pig_royalguard"),
+return makepigman("pigman_royalguard", "pig_royalguard"),
         makepigman("pigman_royalguard_2", "pig_royalguard_2"),
-
         makepigman("pig_royalguard_rich", "pig_royalguard_rich"),
         makepigman("pig_royalguard_rich_2", "pig_royalguard_rich_2"),
         makepigman("pigman_royalguard_3", "pig_royalguard_3")
