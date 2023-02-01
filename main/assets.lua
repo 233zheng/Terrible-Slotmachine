@@ -30,7 +30,7 @@ PrefabFiles =
 }
 
 local AddInventoryItemAtlas = gemrun("tools/misc").Local.AddInventoryItemAtlas
-AddInventoryItemAtlas(resolvefilepath("images/mean_flytrap.xml"))
+AddInventoryItemAtlas(resolvefilepath("images/halberd.xml"))
 
 Assets = {
     --Loading minimap
