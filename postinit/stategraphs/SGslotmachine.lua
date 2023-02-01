@@ -5,7 +5,6 @@ local function postinit(inst)
     local _done_onenter = inst.states["done"].onenter
     inst.states["done"].onenter = function(inst, ...)
         local spawnboss = nil
-        local spawnboss2 = nil
         if inst.level ~= nil then
             inst.level = inst.level + math.random() * 0.4 + 0.6
             if inst.level >= 100 and inst.level < 101 then
@@ -24,8 +23,7 @@ local function postinit(inst)
                 spawnboss = SpawnPrefab("shadowchesses")
                 inst.level = 502
             elseif inst.level >= 600 and inst.level < 601 then
-                spawnboss = SpawnPrefab("twinofterror1")
-                spawnboss2 = SpawnPrefab("twinofterror2")
+                spawnboss = SpawnPrefab("twinmanager")
                 inst.level = 602
             elseif inst.level >= 700 and inst.level < 701 then
                 spawnboss = SpawnPrefab("alterguardian_phase1")
@@ -33,9 +31,6 @@ local function postinit(inst)
             end
             if spawnboss ~= nil then
                 spawnboss.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                if spawnboss2 ~= nil then
-                    spawnboss2.Transform:SetPosition(inst.Transform:GetWorldPosition())
-                end
                 print("bossspawned")
             end
             print("level is not nil".. tostring(inst.level))
