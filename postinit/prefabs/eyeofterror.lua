@@ -417,10 +417,10 @@ local function twinmanagerpostinit(inst)
         for i, v in ipairs(AllPlayers) do
             player = v
         end
-        inst:PushEvent("arrive", player)
+        inst:PushEvent("playeronnear", player)
     end)
 
-    inst:ListenForEvent("arrive", spawn_arriving_twins)
+    inst:ListenForEvent("playeronnear", spawn_arriving_twins)
 
     inst.OnLoadPostPass = function(...)
         OnTwinManagerLoadPostPass(...)
